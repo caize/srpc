@@ -41,15 +41,6 @@ abstract class Log
             $this->setLevelLine(self::$_levelStrArr[self::NOTICE]);
         }
         $this->_config = $config;
-        //swoole下才支持
-        if (isset($config['timer'])) {
-            \Swoole\Timer::tick(
-                $config['timer'],
-                function () {
-                    $this->flush();
-                }
-            );
-        }
     }
     
     public function registerTimer($time)
