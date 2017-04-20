@@ -132,6 +132,7 @@ class HttpServer
         //config必须含有 timer值
         $className = "Api\\Log\\{$logConfig['logtype']}";
         $this->_workerLog = new $className($logConfig);
+        $this->_workerLog->registerTimer($logConfig['timer']);
     }
     public function onWorkerStart(Server $server, $workerId)
     {
