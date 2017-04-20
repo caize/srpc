@@ -51,6 +51,16 @@ abstract class Log
             );
         }
     }
+    
+    public function registerTimer($time)
+    {
+        \Swoole\Timer::tick(
+            $time,
+            function () {
+                $this->flush();
+            }
+        );
+    }
 
     public function setLevelLine($level)
     {
