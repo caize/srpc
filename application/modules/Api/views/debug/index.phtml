@@ -1,0 +1,195 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/js/layui/css/layui.css">
+</head>
+<body>
+<script src="http://s.thsi.cn/cb?js/;jquery-1.8.3.min.js"></script>
+<script src="/js/layui/layui.js"></script>
+
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>Debug调试Demo</legend>
+</fieldset>
+<form class="layui-form" method="post">
+    <div class="layui-form-item">
+        <label class="layui-form-label">服务:</label>
+        <div class="layui-input-block">
+            <select name="service"  lay-verify="required" lay-filter="service">
+                <option value="">请选择</option>
+                <?php
+                    foreach ($this->list as $item) :
+                ?>
+                <option value="<?php echo $item['id'];?>"><?php echo $item['name'];?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">URl:</label>
+        <div class="layui-input-inline">
+            <input type="text" value="" name="url" readonly class="layui-input" lay-filter="url">
+        </div>
+        <div class="layui-input-inline">
+            <a class="layui-btn layui-btn-disabled" id="wiki"> 说明 </a>
+        </div>
+    </div>
+    <div class="layui-form-item" id="urlParamsItem">
+        <div class="layui-form-item" >
+            <label class="layui-form-label">Params</label>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">key</label>
+            </div>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">value</label>
+            </div>
+            <label class="layui-form-label"><a class="layui-btn" id="addParams">添加</a></label>
+        </div>
+    </div>
+    <!--div class="layui-form-item" id="paramsHeaderItem">
+        <label class="layui-form-label">header:</label>
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <label class="layui-form-label">Token:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="token" class="layui-input" style="width:200%" value="<?php echo $this->token;?>">
+            </div>
+        </div>
+    </div-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">function:</label>
+        <div class="layui-input-block">
+            <select name="funcName"  lay-verify="required" lay-filter="service">
+                <option value="">请选择</option>
+            </select>
+        </div>
+    </div>
+    <blockquote class="layui-elem-quote">不输入key，代表参数类型为字符串或者数字，单个参数为数组，根据实际情况输入key=》val, 如果多个数组参数key中用.分割,.前面相同字符串会进行数组合并，第一次出现.后的内容为参数数组的key</blockquote>
+    <div class="layui-form-item" id="funcParamsItem">
+        <div class="layui-form-item" >
+            <label class="layui-form-label">Params</label>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">key</label>
+            </div>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">value</label>
+            </div>
+            <label class="layui-form-label"><a class="layui-btn" id="addParamsFunction">添加</a></label>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+            <button lay-submit class="layui-btn" lay-filter="submit">提交</button>
+        </div>
+    </div>
+</form>
+
+</body>
+<script>
+    var dataJson = JSON.parse('<?php echo json_encode($this->list); ?>');
+    layui.use(['layer', 'form'], function(){
+        var layer = layui.layer,form = layui.form();
+        //layer.msg('Hello World');
+        form.on('submit(submit)', function(data) {
+
+        })
+        function addParamsBind()
+        {
+            var ele = createUrlParamElement('', '');
+            $('#urlParamsItem').append(ele);
+
+        }
+        document.getElementById('addParams').onclick = addParamsBind
+        $('#addParamsFunction').click(function(){
+            var ele = createUrlParamElement('', '', 'func');
+            $('#funcParamsItem').append(ele);
+        })
+        function createUrlParamElement(k, v, namePre)
+        {
+            if (typeof(namePre) == 'undefined') {
+                var paramsKey = 'urlParamskey';
+                var paramsVal = 'urlParamsValue';
+            } else {
+                var paramsKey = namePre + 'Paramskey';
+                var paramsVal = namePre + 'ParamsValue';
+            }
+            var elementParnet = document.createElement('div');
+            elementParnet.className = 'layui-form-item';
+            var label1 = document.createElement('label');
+            label1.className = 'layui-form-label';
+            var div1 = document.createElement('div');
+            var div2 = document.createElement('div');
+            div1.className = 'layui-input-inline';
+            div2.className = 'layui-input-inline';
+//                        var input1 = document.createElement('input');
+//                        input1.className = 'layui-input';
+//                        input1.type='text';
+//                        input1.name="urlParamskey[]";
+//                        input1.value=k;
+            div1.innerHTML = '<input type="text" class="layui-input" name="'+ paramsKey + '[]" value="' + k + '">';
+//                        var input2 = document.createElement('input');
+//                        input2.className = 'layui-input';
+//                        input2.type='text';
+//                        input2.name="urlParamsValue[]";
+//                        input2.value=dataJson[i].parameter[k];
+//                        div2.appendChild(input2);
+            div2.innerHTML = '<input type="text" class="layui-input" name="' + paramsVal + '[]" value="' + v + '">';
+
+            elementParnet.appendChild(label1);
+            elementParnet.appendChild(div1);
+            elementParnet.appendChild(div2);
+            return elementParnet;
+        }
+        form.on('select(service)', function(data, select) {
+            for (var i in dataJson) {
+                if (dataJson[i].id == data.value) {
+                    document.getElementsByName('url')[0].value= '/' + dataJson[i].router
+                    var length = document.getElementsByName('urlParamskey[]').length;
+                    if (length > 0) {
+                        for(var j =0; j< length;j++) {
+                            document.getElementsByName('urlParamskey[]')[0].parentNode.parentNode.remove();
+                        }
+                    }
+                    for(var k in dataJson[i].parameter) {
+                        var elementParnet = createUrlParamElement(k, dataJson[i].parameter[k]);
+                        $('#urlParamsItem').append(elementParnet);
+                        //document.getElementById('urlParamsItem').innerHTML = document.getElementById('urlParamsItem').innerHTML + elementParnet.outerHTML;
+                    }
+                    $('#funcParamsItem div.layui-form-item:gt(0)').remove();
+                    //获取方法列表
+                    $.ajax({
+                        url : '/api/debug/getfunc',
+                        data:{'uri':$('input[name="url"]').val()},
+                        type:'post',
+                        dataType:'json',
+                        success:function(data){
+                            $('select[name="funcName"] option:gt(0)').remove();
+                            $.each(data.func, function(k, item){
+                                $('select[name="funcName"]').append('<option value="' + item + '">' + item + '</option>')
+                            })
+                            form.render();
+                        }
+                    })
+                }
+            }
+            if ($('input[name="url"]').val().length > 0) {
+                $('#wiki').removeClass('layui-btn-disabled');
+            } else if (!$('#wiki').hasClass('layui-btn-disabled')) {
+                $('#wiki').addClass('layui-btn-disabled');
+            }
+        })
+        $('#wiki').click(function(){
+            if ($('input[name="url"]').val().length > 0) {
+                layer.open({
+                    type :2,
+                    title: '说明',
+                    'maxmin': true,
+                    shadeClose : true,
+                    area:['800px', '530px'],
+                    content : $('input[name="url"]').val()
+                })
+            }
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,29 @@
+<?php
+require dirname(__FILE__) . '/../menu.phtml';
+?>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>申请列表</legend>
+</fieldset>
+<a href="<?php echo $this->baseUrl;?>/apps/applyadd/" class="layui-btn">申请</a>
+<table class="layui-table">
+    <tr>
+        <td>ID</td>
+        <td>应用名称</td>
+        <td>申请人</td>
+        <td>申请时间</td>
+        <td>操作</td>
+    </tr>
+    <?php foreach ($this->list as $item):?>
+        <tr>
+            <td><?php echo $item['id'];?></td>
+            <td><?php echo $item['appname'];?></td>
+            <td><?php echo $item['applyuser'];?></td>
+            <td><?php echo $item['ctime'];?></td>
+            <td><a href="<?php echo $this->baseUrl;?>/apps/review/?id=<?php echo $item['id'];?>">通过审核</a>
+            </td>
+        </tr>
+    <?php endforeach;
+    ?>
+    <?php
+    ?>
+</table>

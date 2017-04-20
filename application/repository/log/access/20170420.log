@@ -1,0 +1,4 @@
+{"datatime":"2017-04-20 09:10:57","errorLevel":"NOTICE","errorMsg":{"type":"http","url":"api\/test\/dbtestrpc\/","method":"GET","params":"","appid":null}}
+{"datatime":"2017-04-20 09:10:58","errorLevel":"NOTICE","errorMsg":{"type":"http","url":"api\/debug\/index\/","method":"GET","params":"","appid":null}}
+{"datatime":"2017-04-20 09:16:29","errorLevel":"NOTICE","errorMsg":{"type":"http","url":"admin\/service\/index\/","method":"GET","params":"","appid":null}}
+{"datatime":"2017-04-20 09:16:29","errorLevel":"NOTICE","errorMsg":{"type":"http","url":"admin\/login\/login\/","method":"GET","params":"","appid":null}}

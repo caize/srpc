@@ -1,0 +1,37 @@
+<?php
+require dirname(__FILE__) . '/../menu.phtml';
+?>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>服务列表</legend>
+</fieldset>
+<a href="<?php echo $this->baseUrl;?>/service/add/" class="layui-btn layui-btn-danger">新增</a>
+<table class="layui-table">
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td>服务名称</td>
+        <td>服务地址</td>
+        <td>是否验证</td>
+        <td>host</td>
+        <td>备注</td>
+        <td>修改时间</td>
+        <td>操作</td>
+    </tr>
+    </thead>
+    <?php foreach ($this->list as $item):?>
+        <tr>
+            <td><?php echo $item['id'];?></td>
+            <td><?php echo $item['name'];?></td>
+            <td><?php echo $item['url'];?></td>
+            <td><?php echo $item['isauth'] ? 'yes' : 'no';?></td>
+            <td><?php echo $item['host'];?></td>
+            <td><?php echo $item['desc'];?></td>
+            <td><?php echo $item['mtime'];?></td>
+            <td><a href="<?php echo $this->baseUrl;?>/service/edit/?id=<?php echo $item['id'];?>">修改</a>
+            </td>
+        </tr>
+    <?php endforeach;
+    ?>
+<?php
+?>
+</table>

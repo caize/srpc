@@ -1,0 +1,92 @@
+<?php
+require dirname(__FILE__) . '/../menu.phtml';
+?>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>第三方认证绑定</legend>
+</fieldset>
+<form class="layui-form" method="post">
+    <input type="hidden" name="appid" value="<?php echo $this->appid;?>">
+    <div class="layui-form-item">
+        <label class="layui-form-label">认证类型:</label>
+        <div class="layui-input-block">
+            <select name="type"  lay-verify="required" lay-filter="service">
+                <option value="">请选择</option>
+                <?php
+                    foreach ($this->authList as $item) :
+                ?>
+                <option value="<?php echo $item;?>"><?php echo $item;?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">认证ID:</label>
+        <div class="layui-input-inline">
+            <input type="text" value="" name="authid" lay-verify="required" class="layui-input" lay-filter="authid">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">认证秘钥:</label>
+        <div class="layui-input-inline">
+            <input type="text" value="" name="authsecret" lay-verify="required"  class="layui-input" lay-filter="authsecret">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+            <button lay-submit class="layui-btn" lay-filter="submit">提交</button>
+        </div>
+    </div>
+</form>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>已绑定列表</legend>
+</fieldset>
+<table class="layui-table">
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>用户ID</td>
+            <td>秘钥</td>
+            <td>操作</td>
+        </tr>
+    </thead>
+    <?php
+        foreach ($this->hasBindThirdList as $item):
+    ?>
+            <tr>
+                <td><?php echo $item['type'];?></td>
+                <td><?php echo $item['third_name'];?></td>
+                <td><?php echo $item['third_pwd'];?></td>
+                <td><a class="layui-btn" href="<?php echo $this->baseUrl,'/apps/delbindthird/?appid=', $this->appid,'&type=',$item['type'];?>">删除</a></td>
+            </tr>
+    <?php
+    endforeach;
+    ?>
+</table>
+</body>
+<script>
+    var dataJson = JSON.parse('<?php echo json_encode($this->list); ?>');
+    layui.use(['layer', 'form'], function(){
+        var layer = layui.layer,form = layui.form();
+        //layer.msg('Hello World');
+        form.on('submit(submit)', function(data) {
+            $.ajax({
+                url:'/admin/apps/bindthirdauth',
+                type:'post',
+                data:data.field,
+                dataType:'json',
+                success:function(data)
+                {
+                    if (data.errorcode == 0) {
+                        location.href = '/admin/apps/bindthirdauth/?appid=' + $('input[name="appid"]').val();
+                    } else {
+                        alert(data.errormsg);
+                    }
+                }
+            })
+            console.log(data.field);
+            return false;
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,38 @@
+<?php
+require dirname(__FILE__) . '/../menu.phtml';
+?>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>新增路由</legend>
+</fieldset>
+<form method="post">
+<table class ="layui-table">
+    <tr>
+        <td>本地路由</td>
+        <td><input type="text" name="module" placeholder="模块">/<input placeholder="控制器" type="text" name="controller">/<input type="text" name="action" placeholder="动作"></td>
+    </tr>
+    <tr>
+        <td>路由名称</td>
+        <td><input type="text" name="routername" placeholder="路由名称"></td>
+    </tr>
+    <tr>
+        <td>服务</td>
+        <td>
+            <select name="apiid">
+                <?php
+                    foreach ($this->serviceList as $item):
+                ?>
+                        <option value="<?php echo $item['id'];?>">
+                            <?php echo $item['name'];?>
+                        </option>
+                <?php
+                    endforeach;
+                ?>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type="submit" name="submitBut" value="提交"></td>
+    </tr>
+</table>
+</form>

@@ -1,0 +1,56 @@
+{"datatime":"2017-04-18 08:57:47","errorLevel":"WARN","errorMsg":"PDO::prepare(): MySQL server has gone away in \/var\/www\/webrpc\/application\/library\/vendor\/laravel\/framework\/src\/Illuminate\/Database\/Connection.php on line 333"}
+{"datatime":"2017-04-18 08:58:22","errorLevel":"WARN","errorMsg":"PDO::prepare(): MySQL server has gone away in \/var\/www\/webrpc\/application\/library\/vendor\/laravel\/framework\/src\/Illuminate\/Database\/Connection.php on line 333"}
+{"datatime":"2017-04-18 08:58:36","errorLevel":"WARN","errorMsg":"PDO::prepare(): MySQL server has gone away in \/var\/www\/webrpc\/application\/library\/vendor\/laravel\/framework\/src\/Illuminate\/Database\/Connection.php on line 333"}
+{"datatime":"2017-04-18 09:08:29","errorLevel":"WARN","errorMsg":"PDO::prepare(): MySQL server has gone away in \/var\/www\/webrpc\/application\/library\/vendor\/laravel\/framework\/src\/Illuminate\/Database\/Connection.php on line 333"}
+{"datatime":"2017-04-18 09:09:10","errorLevel":"WARN","errorMsg":"PDO::prepare(): MySQL server has gone away in \/var\/www\/webrpc\/application\/library\/vendor\/laravel\/framework\/src\/Illuminate\/Database\/Connection.php on line 333"}
+{"datatime":"2017-04-18 09:13:10","errorLevel":"WARN","errorMsg":"PDO::prepare(): MySQL server has gone away in \/var\/www\/webrpc\/application\/library\/vendor\/laravel\/framework\/src\/Illuminate\/Database\/Connection.php on line 333"}
+{"datatime":"2017-04-18 10:29:07","errorLevel":"ERROR","errorMsg":" url favicon.ico\/index\/index\/ There is no module Favicon.ico"}
+{"datatime":"2017-04-18 10:34:53","errorLevel":"ERROR","errorMsg":" url favicon.ico\/index\/index\/ There is no module Favicon.ico"}
+{"datatime":"2017-04-18 10:40:54","errorLevel":"WARN","errorMsg":"PDO::prepare(): MySQL server has gone away in \/var\/www\/webrpc\/application\/library\/vendor\/laravel\/framework\/src\/Illuminate\/Database\/Connection.php on line 333"}
+{"datatime":"2017-04-18 22:34:43","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:36:11","errorLevel":"ERROR","errorMsg":" url favicon.ico\/index\/index\/ There is no module Favicon.ico"}
+{"datatime":"2017-04-18 22:34:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:36:55","errorLevel":"ERROR","errorMsg":" url favicon.ico\/index\/index\/ There is no module Favicon.ico"}
+{"datatime":"2017-04-18 22:37:00","errorLevel":"ERROR","errorMsg":" url favicon.ico\/index\/index\/ There is no module Favicon.ico"}
+{"datatime":"2017-04-18 22:34:43","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:35:36","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:35:38","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:53","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:35:38","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:53","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:35:51","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:36:13","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:36:51","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:55","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:36:13","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:55","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:55","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:36:51","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:34:55","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:47","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:55","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:55","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:07","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:52","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:53","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:46","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:47","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:46","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:07","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:53","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:46","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:53","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:52","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}
+{"datatime":"2017-04-18 22:41:46","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:54","errorLevel":"ERROR","errorMsg":" url js\/layui\/css\/ There is no module Js"}
+{"datatime":"2017-04-18 22:42:53","errorLevel":"ERROR","errorMsg":" url js\/layui\/layui.js\/ There is no module Js"}

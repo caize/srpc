@@ -1,0 +1,40 @@
+<?php
+require dirname(__FILE__) . '/../menu.phtml';
+?>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>修改服务</legend>
+</fieldset>
+<form method="post">
+    <input type="hidden" name="id" value="<?php echo $this->row->id;?>">
+<table class="layui-table">
+    <tr>
+        <td>服务名称</td>
+        <td><input type="text" name="serviceName" value="<?php echo $this->row->name;?>"></td>
+    </tr>
+    <tr>
+        <td>url</td>
+        <td><input type="text" name="serviceUrl" value="<?php echo $this->row->url;?>"></td>
+    </tr>
+
+    <tr>
+        <td>host</td>
+        <td><input type="text" name="serviceHost" value="<?php echo $this->row->host;?>"></td>
+    </tr>
+    <tr>
+        <td>验证</td>
+        <td><input type="radio" name="serviceAuth" value = 1 <?php if ($this->row->isauth): echo 'checked';endif;?>> 是<input type="radio" name="serviceAuth" value = 0 <?php if (!$this->row->isauth): echo 'checked';endif;?>> 否</td>
+    </tr>
+    <tr>
+        <td>分组</td>
+        <td><select name="serviceGroups"></select></td>
+    </tr>
+    <tr>
+        <td>备注</td>
+        <td><input type="text" name="serviceDesc" value="<?php echo $this->row->desc;?>"></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type="submit" name="serviceSubmit" value="提交"></td>
+    </tr>
+</table>
+</form>

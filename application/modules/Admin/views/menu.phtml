@@ -1,0 +1,22 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/js/layui/css/layui.css">
+</head>
+<body>
+<script src="http://s.thsi.cn/cb?js/;jquery-1.8.3.min.js"></script>
+<script src="/js/layui/layui.js"></script>
+
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>Debug调试Demo</legend>
+</fieldset>
+<div class="layui-form-item">
+    <a href="<?php echo $this->baseUrl?>/service/index" class="layui-btn">服务列表</a>
+    <a href="<?php echo $this->baseUrl?>/apps/index" class="layui-btn">应用列表</a>
+    <a href="<?php echo $this->baseUrl?>/apps/applylist" class="layui-btn">申请应用</a>
+    <a href="<?php echo $this->baseUrl?>/router/list" class="layui-btn">路由映射</a>
+</div>
+<hr>
+<font color="red">
+<?php echo isset($this->errorMsg) ?  $this->errorMsg: '';?>
+</font>

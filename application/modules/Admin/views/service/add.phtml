@@ -1,0 +1,39 @@
+<?php
+require dirname(__FILE__) . '/../menu.phtml';
+?>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>添加服务</legend>
+</fieldset>
+<form method="post">
+<table class="layui-table">
+    <tr>
+        <td>服务名称</td>
+        <td><input type="text" name="serviceName" value=""></td>
+    </tr>
+    <tr>
+        <td>url</td>
+        <td><input type="text" name="serviceUrl"></td>
+    </tr>
+
+    <tr>
+        <td>host</td>
+        <td><input type="text" name="serviceHost"></td>
+    </tr>
+    <tr>
+        <td>验证</td>
+        <td><input type="radio" name="serviceAuth" value = 1> 是<input type="radio" name="serviceAuth" value = 0 checked> 否</td>
+    </tr>
+    <tr>
+        <td>分组</td>
+        <td><select name="serviceGroups"></select></td>
+    </tr>
+    <tr>
+        <td>备注</td>
+        <td><input type="text" name="serviceDesc"></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type="submit" name="serviceSubmit" value="提交"></td>
+    </tr>
+</table>
+</form>

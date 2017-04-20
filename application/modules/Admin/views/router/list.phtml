@@ -1,0 +1,31 @@
+<?php
+require dirname(__FILE__) . '/../menu.phtml';
+?>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>路由列表</legend>
+</fieldset>
+<a href="<?php echo $this->baseUrl;?>/router/add/" class="layui-btn layui-btn-radius">新增</a>
+<table class="layui-table">
+    <tr>
+        <td>ID</td>
+        <td>本地路由</td>
+        <td>服务名</td>
+        <td>服务地址</td>
+        <td>服务host</td>
+        <td>操作</td>
+    </tr>
+    <?php foreach ($this->list as $k => $item):?>
+        <tr>
+            <td><?php echo $k + 1;?></td>
+            <td><?php echo $item['router'];?></td>
+            <td><?php echo $item['name'];?></td>
+            <td><?php echo $item['url'];?></td>
+            <td><?php echo $item['host'];?></td>
+            <td>
+            </td>
+        </tr>
+    <?php endforeach;
+    ?>
+    <?php
+    ?>
+</table>

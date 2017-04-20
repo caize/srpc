@@ -1,0 +1,20 @@
+[2017-03-27 20:18:58]	NOTICE	Undefined variable: sfdasdf in /home/lugang/dev/b2cweb/service/application/plugins/Log.php on line 30
+[2017-03-27 20:19:15]	NOTICE	Undefined variable: sfdasdf in /home/lugang/dev/b2cweb/service/application/plugins/Log.php on line 30
+[2017-03-27 20:28:52]	NOTICE	Undefined variable: sfdasdf in /home/lugang/dev/b2cweb/service/application/plugins/Log.php on line 30
+[2017-03-27 20:28:52]	WARN	Missing argument 5 for Api\Log::errorHandler(), called in /home/lugang/dev/b2cweb/service/application/library/Api/Log.php on line 75 and defined in /home/lugang/dev/b2cweb/service/application/library/Api/Log.php on line 81
+[2017-03-27 20:28:52]	ERROR	Uncaught Error: Call to undefined function salkdfjlsak() in /home/lugang/dev/b2cweb/service/application/plugins/Log.php:31
+Stack trace:
+#0 /home/lugang/dev/b2cweb/service/application/Bootstrap.php(71): LogPlugin->__construct()
+#1 [internal function]: Bootstrap->_initPlugin(Object(Yaf\Dispatcher))
+#2 /home/lugang/dev/b2cweb/service/html/index.php(7): Yaf\Application->bootstrap()
+#3 {main}
+  thrown in /home/lugang/dev/b2cweb/service/application/plugins/Log.php on line 31
+[2017-03-27 20:28:52]	NOTICE	Undefined variable: sfdasdf in /home/lugang/dev/b2cweb/service/application/plugins/Log.php on line 30
+[2017-03-27 20:28:52]	WARN	Missing argument 5 for Api\Log::errorHandler(), called in /home/lugang/dev/b2cweb/service/application/library/Api/Log.php on line 75 and defined in /home/lugang/dev/b2cweb/service/application/library/Api/Log.php on line 81
+[2017-03-27 20:28:52]	ERROR	Uncaught Error: Call to undefined function salkdfjlsak() in /home/lugang/dev/b2cweb/service/application/plugins/Log.php:31
+Stack trace:
+#0 /home/lugang/dev/b2cweb/service/application/Bootstrap.php(71): LogPlugin->__construct()
+#1 [internal function]: Bootstrap->_initPlugin(Object(Yaf\Dispatcher))
+#2 /home/lugang/dev/b2cweb/service/html/index.php(7): Yaf\Application->bootstrap()
+#3 {main}
+  thrown in /home/lugang/dev/b2cweb/service/application/plugins/Log.php on line 31
