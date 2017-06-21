@@ -8,6 +8,7 @@
  */
 namespace Api\Controller;
 use Admin\LoginModel;
+use Api\Globals\Functions;
 use \Yaf\Controller_Abstract;
 use Yaf\Registry;
 
@@ -19,19 +20,20 @@ class Base extends Controller_Abstract
      */
     protected $_swooleResponse = null;
     public $baseUrl = null;
+    protected $_isLogin = 1;
     public function init()
     {
         //swoole 下必须加上
         $this->_view->clear();
         $this->_runStartTime = microtime(true);
         //swoole获取host HTTP_ORIGIN
-        $this->baseUrl = \Yaf\Registry::get('projectBaseUrl');
-
+        $this->baseUrl = Functions::getHttpProto() . Functions::getServerName();
         //增加简单的登录验证
         $loginModel = new LoginModel();
         if (!$loginModel->check()) {
             $this->redirect('/admin/login/login/');
-            return;
+            $this->_isLogin = false;
+            return false;
         }
     }
     protected function _changeToJson()
@@ -42,6 +44,8 @@ class Base extends Controller_Abstract
 
     public function display($tpl = null, array $parameters = NULL)
     {
+        if (!$this->_isLogin)
+            return false;
         $this->_view->times = round(microtime(true) - $this->_runStartTime, 5);
         $this->_view->baseUrl = $this->baseUrl . '/' . strtolower($this->_request->getModuleName());
         if ($tpl === null) {

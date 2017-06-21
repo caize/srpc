@@ -36,8 +36,7 @@ abstract  class Cabstract implements Cache
     {
         if ($this->_store === null) {
             $this->_connect();
-        }
-        if (!$this->_heartbeat()) {
+        } elseif (!$this->_heartbeat()) {
             $this->_connect(1);
         }
         return $this->_store;
@@ -50,6 +49,18 @@ abstract  class Cabstract implements Cache
             $flag = $flag & $this->set($key, $val);
         }
         return $flag;
+    }
+
+    public function mGet($keys)
+    {
+        $data = [];
+        foreach ($keys as $key) {
+            $data[$key] = $this->get($key);
+//            if ($data[$key] === false) {
+//                unset($data[$key]);
+//            }
+        }
+        return $data;
     }
     /**
      * @return string

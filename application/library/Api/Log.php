@@ -6,6 +6,8 @@
  * Time: 10:24
  */
 namespace Api;
+use Api\Globals\Functions;
+
 abstract class Log
 {
     const TRACE = 0;
@@ -41,15 +43,19 @@ abstract class Log
             $this->setLevelLine(self::$_levelStrArr[self::NOTICE]);
         }
         $this->_config = $config;
-        //swoole下才支持
-        if (isset($config['timer'])) {
-            \Swoole\Timer::tick(
-                $config['timer'],
-                function () {
-                    $this->flush();
-                }
-            );
-        }
+    }
+
+    /**
+     * @param $time 毫秒
+     */
+    public function registerTimer($time)
+    {
+        \Swoole\Timer::tick(
+            $time,
+            function () {
+                $this->flush();
+            }
+        );
     }
 
     public function setLevelLine($level)
@@ -70,7 +76,8 @@ abstract class Log
         $dateObj = new \DateTime();
         $date = $dateObj->format('Ymd');
         $log = $dateObj->format(self::$_dateFormat);
-        return date($log) . "\t{$levelStr}\t{$msg}\n";
+        $address = Functions::getIpAddress();
+        return date($log) . "\t{$levelStr}\t{$msg}\t{$address}\n";
     }
 
     public function registerErrorHandler()
@@ -116,7 +123,7 @@ abstract class Log
                 $str = sprintf("%s in %s on line %d", $errstr, $errfile, $errline);
                 $this->put($str, $mapStr);
                 $this->flush();
-                exit(1);
+                return;
                 break;
             case E_STRICT:
             case E_DEPRECATED:

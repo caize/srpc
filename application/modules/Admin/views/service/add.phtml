@@ -8,16 +8,16 @@ require dirname(__FILE__) . '/../menu.phtml';
 <table class="layui-table">
     <tr>
         <td>服务名称</td>
-        <td><input type="text" name="serviceName" value=""></td>
+        <td><input type="text" name="serviceName" value="" class="layui-input"></td>
     </tr>
     <tr>
         <td>url</td>
-        <td><input type="text" name="serviceUrl"></td>
+        <td><input type="text" name="serviceUrl" class="layui-input"></td>
     </tr>
 
     <tr>
         <td>host</td>
-        <td><input type="text" name="serviceHost"></td>
+        <td><input type="text" name="serviceHost" class="layui-input"></td>
     </tr>
     <tr>
         <td>验证</td>
@@ -28,8 +28,12 @@ require dirname(__FILE__) . '/../menu.phtml';
         <td><select name="serviceGroups"></select></td>
     </tr>
     <tr>
+        <td>wiki</td>
+        <td><input type="text" name="wiki" class="layui-input"></td>
+    </tr>
+    <tr>
         <td>备注</td>
-        <td><input type="text" name="serviceDesc"></td>
+        <td><input type="text" name="serviceDesc" class="layui-input"></td>
     </tr>
     <tr>
         <td></td>

@@ -15,15 +15,22 @@ class LoginModel
 {
     private $_user = 'admin';
     private $_pwd = 'admin123';
+    public function __construct()
+    {
+        $this->_pwd = APPLICATION_ENV == 'production' ? sha1('admin_' . date('Ymd')) : $this->_pwd;
+    }
+
     public function check()
     {
         $modulesName = strtolower(\Yaf\Dispatcher::getInstance()->getRequest()->module);
         $controllerName = strtolower(\Yaf\Dispatcher::getInstance()->getRequest()->controller);
-
         if ($modulesName == 'admin' && $controllerName == 'login') {
             return true;
         } elseif ($modulesName == 'admin') {
-            if ($_COOKIE['user'] == $this->getEncryPwd($this->_user, $this->_pwd)) {
+            if (
+                isset($_COOKIE['userSwoole'])
+                && $_COOKIE['userSwoole'] == $this->getEncryPwd($this->_user, $this->_pwd)
+            ) {
                 return true;
             }
             return false;
@@ -39,7 +46,7 @@ class LoginModel
     public function doLogin($userName, $userPwd)
     {
         if ($this->getEncryPwd($userName, $userPwd) == $this->getEncryPwd($this->_user, $this->_pwd)) {
-            Cookie::set('user', $this->getEncryPwd($userName, $userPwd));
+            Cookie::set('userSwoole', $this->getEncryPwd($userName, $userPwd));
             return true;
         }
         return false;

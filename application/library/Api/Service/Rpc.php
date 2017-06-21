@@ -42,7 +42,7 @@ class Rpc
             $authToken = \Yaf\Dispatcher::getInstance()->getRequest()->getParam('auth-token', false);
         }
         $apiModel->authToken = $authToken;
-
+        $apiModel->appid = \Yaf\Dispatcher::getInstance()->getRequest()->getParam('@appid', null);
         if (method_exists($apiModel, '__setParams')) {
             $apiModel->__setParams(\Yaf\Dispatcher::getInstance()->getRequest()->getParams());
         }
@@ -62,11 +62,14 @@ class Rpc
             if (defined('SWOOLE_SERVER')) {
                 $isSwoolePost = 1;
             }
+            if (method_exists($apiModel, '__setParams')) {
+                $apiModel->__setParams($params);
+            }
         }
         //test debug
-//        $data = $apiModel->send();
-//        var_dump(json_decode($data));
-//        exit();
+        //$data = $apiModel->send();
+        //var_dump(json_decode($data));
+        //exit();
         //end
         if ($isSwoolePost) {
             //解析$sysProtocol['data']

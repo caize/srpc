@@ -35,7 +35,6 @@ class Bootstrap extends Yaf\Bootstrap_Abstract
         $config = new \Yaf\Config\Ini(APPLICATION_PATH_CONFIG . '/redis.ini', APPLICATION_ENV);
         $redisConfig = $config->toArray();
         Yaf\Registry::set('redisConfig', $redisConfig);
-        Registry::set('projectBaseUrl', $objConfig->application->baseUrl);
     }
 
     /**
@@ -43,7 +42,7 @@ class Bootstrap extends Yaf\Bootstrap_Abstract
      */
     public function _initLoadNameSpace(Yaf\Dispatcher $dispatcher)
     {
-        Yaf\Loader::getInstance()->registerLocalNamespace(array('Api', 'Hprose', 'Syar'));
+        Yaf\Loader::getInstance()->registerLocalNamespace(array('Api', 'Hprose', 'Syar', 'Quote', 'Zend'));
     }
 
     public function _initRoute(Yaf\Dispatcher $dispatcher)

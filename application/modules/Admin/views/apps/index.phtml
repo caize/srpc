@@ -12,6 +12,8 @@ require dirname(__FILE__) . '/../menu.phtml';
         <td>秘钥</td>
         <td>应用名称</td>
         <td>申请人</td>
+        <td>Email</td>
+        <td>serveralert</td>
         <td>申请日期</td>
         <td>操作</td>
     </tr>
@@ -23,9 +25,12 @@ require dirname(__FILE__) . '/../menu.phtml';
             <td><?php echo $item['secret'];?></td>
             <td><?php echo $item['appname'];?></td>
             <td><?php echo $item['applyuser'];?></td>
+            <td><?php echo $item['applyemail'];?></td>
+            <td><?php echo $item['serveralertname'];?></td>
             <td><?php echo $item['applydate'];?></td>
             <td>
-                <a href="<?php echo $this->baseUrl;?>/apps/addservice/?appid=<?php echo $item['appid'];?>">添加权限</a>
+                <a href="<?php echo $this->baseUrl;?>/apps/updateinfo/?appid=<?php echo $item['appid'];?>">修改应用信息</a>
+                / <a href="<?php echo $this->baseUrl;?>/apps/addservice/?appid=<?php echo $item['appid'];?>">添加权限</a>
                 / <a href="<?php echo $this->baseUrl;?>/apps/bindthirdauth/?appid=<?php echo $item['appid'];?>">第三方接口认证</a>
             </td>
         </tr>

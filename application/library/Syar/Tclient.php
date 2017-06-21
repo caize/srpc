@@ -41,6 +41,11 @@ class Tclient
     {
         return Transports::exec($this->_url, Protocol::Package($method, $arguments));
     }
+
+    public function setOpt($key, $val)
+    {
+
+    }
 }
 
 
@@ -64,20 +69,9 @@ class Concurrent_Tclient
     {
         foreach (self::$_data as $v) {
             $ret = Transports::exec($v['uri'], $v['data']);
-            if (strpos('HTTP/1.1 200 OK', $ret['header']) !== false) {
-                $call = $v['callback'];
-                $return = true;
-            } else {
-                $call = $v['errcb'];
-                $return = false;
-            }
-            if (is_callable($call)) {
-                $o = $ret['o'];
-                $r = $ret['r'];
-                call_user_func($call, $r, $o);
-            }
+            call_user_func($v['callback'], $v, $ret);
         }
-        return $return;
+        return ;
     }
 }
 
@@ -131,7 +125,6 @@ class Transports
         $in .= "Content-Length: " . strlen($data['data']) . "\r\n\r\n";
 
         $address = gethostbyname($urlinfo['host']);
-
         $fp = fsockopen($address, $port, $err, $errstr);
         if (!$fp) {
             die("cannot conncect to {$address} at port {$port} '{$errstr}'");
@@ -141,7 +134,6 @@ class Transports
         $fOut = '';
         while ($out = fread($fp, 2048))
             $fOut .= $out;
-
         $tmp = explode("\r\n\r\n", $fOut);
         if (isset($tmp[1])) {
             $returnData = unserialize(substr($tmp[1], 82 + 8));
@@ -152,13 +144,24 @@ class Transports
         }
         fclose($fp);
         if ($returnData === false) {
-            throw new \Yar_Client_Exception('result data error', -10);
+            throw new Exception('result data error:' . $fOut, -10);
         }
         if ($returnData['s'] == 0) {
             return $returnData['r'];
         } else {
-            throw new \Yar_Client_Exception($returnData['e'], $returnData['s']);
+            throw new Exception($returnData['e'], $returnData['s']);
         }
     }
 }
 
+class Exception
+{
+    public function __construct($message = "", $code = 0, \Exception $previous = null)
+    {
+        if (class_exists('\\Yar_Client_Exception')) {
+            throw new \Yar_Client_Exception($message, $code, $previous);
+        } else {
+            throw new \Exception($message, $code, $previous);
+        }
+    }
+}

@@ -5,10 +5,7 @@
  * Date: 2017/3/31
  * Time: 15:06
  */
-defined('APPLICATION_ENV')
-|| define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
-define('APPLICATION_PATH', dirname(__FILE__) . '/..');
-define('APPLICATION_PATH_CONFIG', APPLICATION_PATH . '/conf');
+require_once dirname(__FILE__) . '/../html/index_header.php';
 $application = new Yaf\Application(APPLICATION_PATH_CONFIG . "/application.ini", APPLICATION_ENV);
 $application->bootstrap();
 Api\Globals\Functions::lockProcess();

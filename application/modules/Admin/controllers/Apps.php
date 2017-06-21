@@ -7,6 +7,8 @@
  */
 use Api\Controller\Base;
 use Admin\AppsModel;
+use Common\SendmailModel;
+
 class AppsController extends Base
 {
     public function applylistAction()
@@ -20,27 +22,70 @@ class AppsController extends Base
 
     public function applyaddAction()
     {
-        if ($this->_request->isPost()) {
-            $model = new AppsModel();
-            $result = $model->appApply($this->_request->getParams());
-            $view = $this->getView();
-            $view->errorMsg = $result->getResultMsg();
-        }
         $this->display();
     }
 
+    public function applyaddapiAction()
+    {
+        $model = new AppsModel();
+        $result = $model->appApply($this->_request->getParams());
+        if (!$result->getResultCode()) {
+            $appName = $this->getRequest()->getParam('appName');
+            $email = $this->getRequest()->getParam('email');
+            $serveralert = $this->getRequest()->getParam('serveralert');
+            $sendMailModel = new SendmailModel();
+            $people = array('l.gang06@yahoo.com', 'l.gang06@yahoo.com');
+            $title = 'Webrpc新应用申请';
+            $content = '<br/>申请信息<br/>'
+                . '应用名称:' . $appName . '<br/>' . '申请者邮箱:' . $email . '<br/>'
+                . 'serveralert:' . $serveralert . '<br/>'
+                . '--来自--' . APPLICATION_ENV;
+            $sendMailModel->sendHtmlMailToPeople($people, $title, $content);
+        }
+        $res['errormsg'] = $result->getResultMsg();
+        $res['errorcode'] = $result->getResultCode();
+        echo json_encode($res);
+    }
+
+    /**
+     * 应用申请通过接口
+     */
     public function reviewAction()
     {
         $model = new AppsModel();
         $result = $model->review($this->_request->getParam('id', 0));
-        if (!$result->isValid()) {
-            echo "<script>alert('{$result->getResultMsg()}')</script>";
+        if (!$result->getResultCode()) {
+            $applyMsg = $model->getApplyMessageByid($this->_request->getParam('id', 0));
+            $people = array($applyMsg['applyemail']);
+            $subject = $applyMsg['appname'] . '申请反馈';
+            $body = "<br/>您好：<br/>管理员通过了您的\"" . $applyMsg['appname'] . "\"应用申请。";
+            $sendMailModel = new SendmailModel();
+            $sendMailModel->sendHtmlMailToPeople($people, $subject, $body);
         }
-        $flag = $this->redirect(
-            '/' . $this->_request->getModuleName() . '/' . $this->_request->getControllerName() . '/applylist'
-        );
-        echo 'ok';
-        return false;
+        $res['errorcode'] = $result->getResultCode();
+        $res['errormsg'] = $result->getResultMsg();
+        echo json_encode($res);
+    }
+
+    /**
+     * 应用申请驳回接口
+     */
+    public function unreviewAction()
+    {
+        $model = new AppsModel();
+        $result = $model->unReview($this->_request->getParam('id', 0));
+        if (!$result->getResultCode()) {
+            $applyMsg = $model->getApplyMessageByid($this->_request->getParam('id', 0));
+            $people = array($applyMsg['applyemail']);
+            $subject = $applyMsg['appname'] . '申请反馈';
+            $body = "<br/>您好：<br/>管理员驳回了您的" . $applyMsg['appname']
+                . '应用申请。<br/>原因：' . $this->_request->getParam('reason', '未填写');
+            $sendMailModel = new SendmailModel();
+            $sendMailModel->sendHtmlMailToPeople($people, $subject, $body);
+        }
+        $res['errorcode'] = $result->getResultCode();
+        $res['errormsg'] = $result->getResultMsg();
+        echo json_encode($res);
     }
 
     public function applyeditAction()
@@ -60,6 +105,20 @@ class AppsController extends Base
     public function addAction()
     {
 
+    }
+
+    public function updateinfoAction()
+    {
+        $model = new AppsModel();
+        if ($this->_request->isPost()) {
+            $result = $model->updateInfo($this->_request->getParams());
+            $view = $this->getView();
+            $view->errorMsg = $result->getResultMsg();
+        }
+        $row = $model->getInfo($this->_request->getParam('appid', ''));
+        $view = $this->getView();
+        $view->info = $row;
+        $this->display();
     }
 
     public function addserviceAction()
@@ -86,6 +145,7 @@ class AppsController extends Base
         $view->appid = $appid;
         $this->display();
     }
+
 
     public function bindthirdauthAction()
     {
@@ -122,5 +182,19 @@ class AppsController extends Base
             $this->_request->getParam('type', '')
         );
         $this->redirect('/admin/apps/bindthirdauth/?appid=' . $this->_request->getParam('appid', ''));
+    }
+
+    public function getbindinfoAction()
+    {
+        $appid = $this->_request->getParam('appid', 0);
+        $type = $this->_request->getParam('type', '');
+        $appModel = new \Admin\AppsModel();
+        $bindList = $appModel->bindThirdList($appid);
+        $this->_changeToJson();
+        $view = $this->getView();
+        if (isset($bindList[$type])) {
+            $view->result = json_decode($bindList[$type]['content'], true);
+        }
+        $this->display();
     }
 }

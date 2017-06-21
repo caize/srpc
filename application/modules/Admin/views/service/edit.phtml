@@ -9,16 +9,16 @@ require dirname(__FILE__) . '/../menu.phtml';
 <table class="layui-table">
     <tr>
         <td>服务名称</td>
-        <td><input type="text" name="serviceName" value="<?php echo $this->row->name;?>"></td>
+        <td><input type="text" name="serviceName" class="layui-input" value="<?php echo $this->row->name;?>"></td>
     </tr>
     <tr>
         <td>url</td>
-        <td><input type="text" name="serviceUrl" value="<?php echo $this->row->url;?>"></td>
+        <td><input type="text" name="serviceUrl" class="layui-input" value="<?php echo $this->row->url;?>"></td>
     </tr>
 
     <tr>
         <td>host</td>
-        <td><input type="text" name="serviceHost" value="<?php echo $this->row->host;?>"></td>
+        <td><input type="text" name="serviceHost" class="layui-input" value="<?php echo $this->row->host;?>"></td>
     </tr>
     <tr>
         <td>验证</td>
@@ -29,8 +29,28 @@ require dirname(__FILE__) . '/../menu.phtml';
         <td><select name="serviceGroups"></select></td>
     </tr>
     <tr>
+        <td>参数</td>
+        <td>
+            <div class="layui-form-item" id="funcParamsItem">
+                <div class="layui-form-item" >
+                    <div class="layui-input-inline">
+                        <label class="layui-form-label">key</label>
+                    </div>
+                    <div class="layui-input-inline">
+                        <label class="layui-form-label">value</label>
+                    </div>
+                    <label class="layui-form-label"><a class="layui-btn" id="addParamsFunction">添加</a></label>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>wiki</td>
+        <td><input type="text" name="wiki" class="layui-input" value="<?php echo $this->row->wiki;?>"></td>
+    </tr>
+    <tr>
         <td>备注</td>
-        <td><input type="text" name="serviceDesc" value="<?php echo $this->row->desc;?>"></td>
+        <td><input type="text" name="serviceDesc" class="layui-input" value="<?php echo $this->row->desc;?>"></td>
     </tr>
     <tr>
         <td></td>
@@ -38,3 +58,69 @@ require dirname(__FILE__) . '/../menu.phtml';
     </tr>
 </table>
 </form>
+
+<script>
+    var parmaster = JSON.parse(<?php echo json_encode($row->parameter);?>);
+    if (parmaster != null) {
+        $.each(parmaster, function (k , v) {
+            var ele = createUrlParamElement(k, v, 'func');
+            $('#funcParamsItem').append(ele);
+        })
+    }
+    $('#addParamsFunction').click(function(){
+        var ele = createUrlParamElement('', '', 'func');
+        $('#funcParamsItem').append(ele);
+    })
+    function createUrlParamElement(k, v, namePre)
+    {
+        if (typeof(namePre) == 'undefined') {
+            var paramsKey = 'urlParamskey';
+            var paramsVal = 'urlParamsValue';
+        } else {
+            var paramsKey = namePre + 'Paramskey';
+            var paramsVal = namePre + 'ParamsValue';
+        }
+        var elementParnet = document.createElement('div');
+        elementParnet.className = 'layui-form-item';
+        var label1 = document.createElement('label');
+        label1.className = 'layui-form-label';
+        var div1 = document.createElement('div');
+        var div2 = document.createElement('div');
+        div1.className = 'layui-input-inline';
+        div2.className = 'layui-input-inline';
+//                        var input1 = document.createElement('input');
+//                        input1.className = 'layui-input';
+//                        input1.type='text';
+//                        input1.name="urlParamskey[]";
+//                        input1.value=k;
+        div1.innerHTML = '<input type="text" class="layui-input" name="'+ paramsKey + '[]" value="' + k + '">';
+//                        var input2 = document.createElement('input');
+//                        input2.className = 'layui-input';
+//                        input2.type='text';
+//                        input2.name="urlParamsValue[]";
+//                        input2.value=dataJson[i].parameter[k];
+//                        div2.appendChild(input2);
+        div2.innerHTML = '<input type="text" class="layui-input" name="' + paramsVal + '[]" value="' + v + '">';
+
+        elementParnet.appendChild(label1);
+        elementParnet.appendChild(div1);
+        elementParnet.appendChild(div2);
+
+        var label1 = document.createElement('label');
+        label1.className = 'layui-form-label';
+        var a = document.createElement('a');
+        a.className = 'layui-btn';
+        a.id = 'addParamsFunction';
+        a.innerHTML = '删除';
+        a.onclick = function()
+        {
+            $(this).parent().parent().remove();
+        }
+        label1.appendChild(a);
+        elementParnet.appendChild(label1);
+
+
+
+        return elementParnet;
+    }
+</script>

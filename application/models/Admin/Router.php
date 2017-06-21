@@ -23,6 +23,7 @@ class RouterModel
                     'api.name',
                     'api.url',
                     'api.host',
+                    'api.wiki',
                     'router_map.id',
                     'api.parameter'
                 )
@@ -76,7 +77,7 @@ class RouterModel
         $row = $apiTable->first();
         if ($row) {
             $resultModel->setResultCode(-1);
-            $resultModel->setResultMsg('服务已存在');
+            $resultModel->setResultMsg('路由已存在');
             return $resultModel;
         }
         $data = array(
@@ -93,6 +94,17 @@ class RouterModel
             $data['ctime'] = date('Y-m-d H:i:s');
             $flag = DB::table('router_map')->insert($data);
         }
+        if (!$flag) {
+            $resultModel->setResultCode(-1);
+            $resultModel->setResultMsg('操作失败');
+        }
+        return $resultModel;
+    }
+
+    public function del($id)
+    {
+        $resultModel = new ResultModel();
+        $flag = Db::table('router_map')->where('id', '=', $id)->delete();
         if (!$flag) {
             $resultModel->setResultCode(-1);
             $resultModel->setResultMsg('操作失败');

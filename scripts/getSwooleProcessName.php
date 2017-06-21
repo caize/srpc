@@ -13,18 +13,17 @@ class SwooleProcessName
     {
         $config = new \Yaf\Config\Ini(dirname(__FILE__) . '/../conf/swoole.ini', APPLICATION_ENV);
         switch ($processName) {
-            case 'worker':
-                $this->_name = $config->swoole->eventWorkerProcessName;
+            case \Api\Server\Http::PROCESS_NAME_MASTER:
+            case \Api\Server\Http::PROCESS_NAME_WORKER:
+            case \Api\Server\Http::PROCESS_NAME_TASK:
+            case \Api\Server\Http::PROCESS_NAME_MANAGER:
+                $this->_name = $config->swoole->processNamePre . $processName;
                 break;
-            case 'task':
-                $this->_name = $config->swoole->eventTaskProcessName;
+            case \Api\Server\Http::PROCESS_NAME_PRE:
+                $this->_name = $config->swoole->processNamePre;
                 break;
-            case 'manager':
-                $this->_name = $config->swoole->managerProcessName;
-                break;
-            case 'master':
             default:
-                $this->_name = $config->swoole->masterProcessName;
+                $this->_name = $config->swoole->processNamePre . \Api\Server\Http::PROCESS_NAME_MASTER;
         }
     }
 

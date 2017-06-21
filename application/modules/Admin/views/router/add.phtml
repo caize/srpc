@@ -8,11 +8,21 @@ require dirname(__FILE__) . '/../menu.phtml';
 <table class ="layui-table">
     <tr>
         <td>本地路由</td>
-        <td><input type="text" name="module" placeholder="模块">/<input placeholder="控制器" type="text" name="controller">/<input type="text" name="action" placeholder="动作"></td>
+        <td>
+            <div class="layui-inline">
+                <input type="text" name="module" placeholder="模块" class="layui-input layui-input-inline">
+            </div>/
+            <div class="layui-inline">
+                <input placeholder="控制器" type="text" name="controller" class="layui-input layui-input">
+            </div>/
+            <div class="layui-inline">
+                <input type="text" name="action" class="layui-input layui-input-inline" placeholder="动作">
+            </div>
+        </td>
     </tr>
     <tr>
         <td>路由名称</td>
-        <td><input type="text" name="routername" placeholder="路由名称"></td>
+        <td><input type="text" name="routername" placeholder="路由名称" class="layui-input layui-input"></td>
     </tr>
     <tr>
         <td>服务</td>
@@ -32,7 +42,7 @@ require dirname(__FILE__) . '/../menu.phtml';
     </tr>
     <tr>
         <td></td>
-        <td><input type="submit" name="submitBut" value="提交"></td>
+        <td><input type="submit" name="submitBut" value="提交" class="layui-btn"></td>
     </tr>
 </table>
 </form>

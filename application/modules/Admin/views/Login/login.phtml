@@ -1,0 +1,29 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/js/layui/css/layui.css">
+</head>
+<body>
+<script src="http://s.thsi.cn/cb?js/;jquery-1.8.3.min.js"></script>
+<script src="/js/layui/layui.js"></script>
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>登录</legend>
+</fieldset>
+<form method="post">
+    <table class="layui-table">
+        <tr>
+            <td>用户名</td>
+            <td><input name="username" value="" lay-verify="required" class="layui-input"></td>
+        </tr>
+        <tr>
+            <td>密码</td>
+            <td>
+                <input name="userpwd" value="" lay-verify="required" class="layui-input">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="submit" name="submitBut" class="layui-btn" value="提交"></td>
+        </tr>
+    </table>
+</form>

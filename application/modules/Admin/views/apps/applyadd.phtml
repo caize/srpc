@@ -4,15 +4,66 @@ require dirname(__FILE__) . '/../menu.phtml';
 <fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
     <legend>应用申请</legend>
 </fieldset>
-<form method="post">
-<table class="layui-table">
-    <tr>
-        <td>应用名</td>
-        <td><input type="text" name="appName"></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td><input type="submit" name="submitBut" value="提交"></td>
-    </tr>
-</table>
-</form>
+<div>
+    <table class="layui-table">
+        <tr>
+            <td>应用名</td>
+            <td><input type="text" name="appName" id="appName"></td>
+        </tr>
+        <tr>
+            <td>申请人Email</td>
+            <td><input type="text" name="email" id="email"></td>
+        </tr>
+        <tr>
+            <td>serveralert名称</td>
+            <td><input type="text" name="serveralert" id="serveralert"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button class="layui-btn layui-btn-normal" id="submit">提交
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    layui.use(['layer'], function () {
+        var layer = layui.layer;
+        $('#submit').on('click', function () {
+            var appName = $('#appName').val();
+            if (appName == '') {
+                layer.alert('请填写应用名', {icon: 2});
+                return;
+            }
+            var email = $('#email').val();
+            var res = /(\w+)@(\w+)\.com$/;
+            if (!res.test(email)) {
+                layer.alert('请输入正确的邮箱', {icon: 2});
+                return;
+            }
+            var serveralert = $('#serveralert').val();
+            if (serveralert == '') {
+                layer.alert('请填写serveralert', {icon: 2});
+                return;
+            }
+            $.ajax({
+                url: '/admin/apps/applyaddapi',
+                type: 'get',
+                dataType: 'json',
+                data: {
+                    appName: appName,
+                    email: email,
+                    serveralert: serveralert
+                },
+                success: function (data) {
+                    if (data.errorcode == 0) {
+                        window.location.href = '/admin/apps/applylist';
+                    } else {
+                        layer.alert(data.errormsg, {icon: 2});
+                    }
+                }
+            });
+        });
+    });
+
+</script>

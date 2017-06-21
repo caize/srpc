@@ -32,5 +32,12 @@ class RouterController extends Base
         $view->serviceList = $list;
         $this->display();
     }
+
+    public function delAction()
+    {
+        $model = new RouterModel();
+        $result = $model->del($this->_request->getParam('id', 0));
+        $this->redirect('/admin/router/list');
+    }
 }
 

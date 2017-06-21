@@ -65,7 +65,9 @@ class TestController extends Rpc
 
     public function indexAction()
     {
-        echo 1;
+		phpinfo();
+		sleep(1);
+		echo json_encode(['errorcode' => 0, 'errormsg' => '']);
         return false;
     }
     public function dbtestrpcAction()

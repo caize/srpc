@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>日志详细信息</title>
+    <link rel="stylesheet" href="/js/layui/css/layui.css">
+    <link rel="stylesheet" href="/js/jsonview/jsonview.css">
+</head>
+<body>
+<div class="layui-form">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">id</label>
+            <div class="layui-input-inline">
+                <input id="ids" type="text" placeholder="id" value="<?=$log['id']?>"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">时间</label>
+            <div class="layui-input-inline">
+                <input id="datetime" type="text" placeholder="时间" value="<?=$log['datetime']?>"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">错误级别</label>
+            <div class="layui-input-inline">
+                <input id="errorlevel" type="text" placeholder="错误级别" value="<?=$log['errorlevel']?>"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item" >
+        <div class="layui-inline" style="display: <?php if($show == 1) echo 'block';else echo 'none';?>">
+            <label class="layui-form-label">code</label>
+            <div class="layui-input-inline">
+                <input id="code" type="text" placeholder="空" value="<?=$log['code']?>"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline" style="display: <?php if($show == 1) echo 'block';else echo 'none';?>">
+            <label class="layui-form-label">serviceurl</label>
+            <div class="layui-input-inline">
+                <input id="serviceurl" type="text" placeholder="空" value="<?=$log['serviceurl']?>"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">APPID</label>
+            <div class="layui-input-inline">
+                <input id="appid" type="text" placeholder="空" value="<?=$log['appid']?>"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">IP地址</label>
+            <div class="layui-input-inline">
+                <input id="ip" type="text" placeholder="空" value="<?=$log['remoteip']?>"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">URL</label>
+            <div class="layui-input-inline">
+                <input id="url" type="text" placeholder="空" value="<?=$log['url']?>"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">servicename</label>
+            <div class="layui-input-inline">
+                <input id="url" type="text" placeholder="空" value="<?=$log['servicename']?>"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item"  style="display: <?php if($show == 1) echo 'block';else echo 'none';?>">
+        <div class="layui-form-item">
+            <label class="layui-form-label">MSG</label>
+            <div class="layui-input-block">
+                <textarea placeholder="MSG" class="layui-textarea" id="msg" style="height: 100px;"><?=$log['msg']?></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text" style="display: <?php if($show == 1) echo 'block';else echo 'none';?>">
+        <label class="layui-form-label">Trace</label>
+        <div class="layui-input-block">
+            <textarea placeholder="空" class="layui-textarea" id="traces" style="height: 200px;"><?=$log['traces']?></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text" >
+        <label class="layui-form-label">参数</label>
+        <div class="layui-input-block">
+            <?php if($showjson == 0) : ?>
+                <textarea placeholder="空" style="height: 200px;" class="layui-textarea" id="params"><?=$log['params']?></textarea>
+            <?php endif ?>
+
+            <?php if($showjson == 1) : ?>
+                <div id="params"><?=$log['params']?></div>
+            <?php endif ?>
+        </div>
+    </div>
+
+</div>
+<div id="showjson" style="display: none;"><?= $showjson?></div>
+<script src="http://s.thsi.cn/cb?js/;jquery-1.8.3.min.js"></script>
+<script src="/js/layui/layui.js"></script>
+<script src="/js/jsonview/jsonview.js"></script>
+<script>
+    var jquery;
+    var layer;
+    layui.use(['layer', 'jquery'], function () {
+        layer = layui.layer;
+        jquery = layui.jquery;
+//        jquery('#msg').val(base64decode(jquery('#msg').val()));
+//        jquery('#traces').html(base64decode(jquery('#traces').html()))
+//        jquery('#params').html(base64decode(jquery('#params').html()))
+        jquery('#errorlevel').val(
+            getLogLevel(jquery('#errorlevel').val())
+        );
+    });
+
+    var base64DecodeChars = new Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1);
+
+    function base64decode(str) {
+        var c1, c2, c3, c4;
+        var i, len, out;
+        len = str.length;
+        i = 0;
+        out = "";
+        while (i < len) {
+            do {
+                c1 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
+            } while (i < len && c1 == -1);
+            if (c1 == -1)           break;
+            do {
+                c2 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
+            } while (i < len && c2 == -1);
+            if (c2 == -1)           break;
+            out += String.fromCharCode((c1 << 2) | ((c2 & 0x30) >> 4));
+            do {
+                c3 = str.charCodeAt(i++) & 0xff;
+                if (c3 == 61)           return out;
+                c3 = base64DecodeChars[c3];
+            } while (i < len && c3 == -1);
+            if (c3 == -1)           break;
+            out += String.fromCharCode(((c2 & 0XF) << 4) | ((c3 & 0x3C) >> 2));
+            do {
+                c4 = str.charCodeAt(i++) & 0xff;
+                if (c4 == 61)            return out;
+                c4 = base64DecodeChars[c4];
+            } while (i < len && c4 == -1);
+            if (c4 == -1)            break;
+            out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
+        }
+        return out;
+    }
+
+    function getLogLevel(index) {
+        var level = ['TRACE','INFO', 'NOTICE', 'WARN', 'ERROR'];
+        return level[index];
+    }
+    if($('#showjson').html() == 1){
+        $('#params').JSONView($('#params').text())
+    }
+</script>
+</body>
+</html>

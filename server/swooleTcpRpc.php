@@ -7,7 +7,7 @@
  */
 
 require_once dirname(__FILE__) . '/../html/index_header.php';
-$configIni = new \Yaf\Config\Ini(APPLICATION_PATH_CONFIG . '/swoole.ini', APPLICATION_ENV);
-\Yaf\Loader::import(APPLICATION_PATH . '/application/library/TcpRpcServer.php');
+$configIni = new \Yaf\Config\Ini(APPLICATION_PATH_CONFIG . '/swooleTcp.ini', APPLICATION_ENV);
+\Yaf\Loader::import(APPLICATION_PATH . '/application/library/Api/Server/Tcp.php');
 define('SWOOLE_SERVER', 'swoole');
-TcpRpcServer::getInstance()->setSwooleConfig($configIni)->start();
+\Api\Server\Tcp::getInstance()->setSwooleConfig($configIni)->start();

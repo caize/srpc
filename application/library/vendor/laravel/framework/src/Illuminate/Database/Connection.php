@@ -832,6 +832,13 @@ class Connection implements ConnectionInterface
     {
         if (is_null($this->pdo)) {
             $this->reconnect();
+        } else {
+            #链接状态判断
+            try {
+                $this->getPdo()->getAttribute(PDO::ATTR_AUTOCOMMIT);
+            } catch (\PDOException $e) {
+                $this->reconnect();
+            }
         }
     }
 
@@ -978,7 +985,6 @@ class Connection implements ConnectionInterface
         if ($this->transactions >= 1) {
             return $this->getPdo();
         }
-
         if ($this->readPdo instanceof Closure) {
             return $this->readPdo = call_user_func($this->readPdo);
         }

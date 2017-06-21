@@ -67,17 +67,26 @@ class ServiceModel
             'isauth' => $params['serviceAuth'],
             'host' => $params['serviceHost'],
             'groupid' => $groupsId,
+            'wiki' => $params['wiki'],
             'desc' => $params['serviceDesc'],
             'mtime' => date('Y-m-d H:i:s')
         );
-        if (isset($params['serviceParams'])) {
-            $data['parameter'] = $params['serviceParams'];
+        $dataParamster = array();
+        if (isset($params['funcParamskey'])) {
+            foreach ($params['funcParamskey'] as $k => $val) {
+                if (!isset($params['funcParamsValue'][$k])) {
+                    continue;
+                }
+                $dataParamster[$val] = $params['funcParamsValue'][$k];
+            }
         }
+        $data['parameter'] = json_encode($dataParamster);
         if (isset($params['id'])) {
             $flag = Db::table('api')->where('id', '=', $params['id'])->update($data);
         } else {
             $data['ctime'] = date('Y-m-d H:i:s');
-            $flag = DB::table('api')->insert($data);
+            $flag = DB::table('api')->insertGetId($data);
+            $resultModel->setResultData($flag);
         }
         if (!$flag) {
             $resultModel->setResultCode(-1);

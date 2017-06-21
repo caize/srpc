@@ -1,25 +1,49 @@
 <html>
 <head>
     <link rel="stylesheet" href="/js/layui/css/layui.css">
+    <link rel="stylesheet" href="/js/jsonview/jsonview.css">
+    <style>
+        .resultlist {
+            width: 100%;
+            margin: 0 auto;
+            border-radius: 10px;
+        }
+
+        .resultitem {
+            width: 90%;
+            margin: 10px auto;
+            padding: 10px;
+        }
+    </style>
 </head>
-<body>
-<script src="http://s.thsi.cn/cb?js/;jquery-1.8.3.min.js"></script>
+<body id="body">
 <script src="/js/layui/layui.js"></script>
 
-
 <fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
-    <legend>Debug调试Demo</legend>
+    <legend class="layui-btn layui-btn-normal">
+        Debug调试Demo
+    </legend>
+    <button class="layui-btn layui-btn-danger" style="float: right" onclick="viewwiki()">
+        状态编码对应表
+    </button>
+    <button class="layui-btn layui-btn-danger" onclick="viewapiwiki()"  style="float: right; margin-right: 20px;">
+        数据服务接口
+    </button>
+    <button class="layui-btn layui-btn-danger" onclick="viewapp()"  style="float: right; margin-right: 20px;">
+        应用信息查询
+    </button>
+    <button class="layui-btn layui-btn-danger" onclick="viewlog()"  style="float: right; margin-right: 20px;">
+        日志查询系统
+    </button>
 </fieldset>
-<form class="layui-form" method="post">
+<div class="layui-form">
     <div class="layui-form-item">
         <label class="layui-form-label">服务:</label>
         <div class="layui-input-block">
-            <select name="service"  lay-verify="required" lay-filter="service">
+            <select name="service" lay-verify="required" lay-filter="service" lay-search id="service">
                 <option value="">请选择</option>
-                <?php
-                    foreach ($this->list as $item) :
-                ?>
-                <option value="<?php echo $item['id'];?>"><?php echo $item['name'];?></option>
+                <?php foreach ($this->list as $item): ?>
+                    <option value="<?php echo $item['id']; ?>"><?php echo $item['name']; ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -27,14 +51,15 @@
     <div class="layui-form-item">
         <label class="layui-form-label">URl:</label>
         <div class="layui-input-inline">
-            <input type="text" value="" name="url" readonly class="layui-input" lay-filter="url">
+            <input type="text" value="" name="url" id="url" readonly class="layui-input" lay-filter="url">
         </div>
         <div class="layui-input-inline">
             <a class="layui-btn layui-btn-disabled" id="wiki"> 说明 </a>
+            <a class="layui-btn layui-hide" id="wiki_desc" target="_blank"> 打开wiki </a>
         </div>
     </div>
     <div class="layui-form-item" id="urlParamsItem">
-        <div class="layui-form-item" >
+        <div class="layui-form-item">
             <label class="layui-form-label">Params</label>
             <div class="layui-input-inline">
                 <label class="layui-form-label">key</label>
@@ -45,27 +70,19 @@
             <label class="layui-form-label"><a class="layui-btn" id="addParams">添加</a></label>
         </div>
     </div>
-    <!--div class="layui-form-item" id="paramsHeaderItem">
-        <label class="layui-form-label">header:</label>
-        <div class="layui-form-item">
-            <label class="layui-form-label"></label>
-            <label class="layui-form-label">Token:</label>
-            <div class="layui-input-inline">
-                <input type="text" name="token" class="layui-input" style="width:200%" value="<?php echo $this->token;?>">
-            </div>
-        </div>
-    </div-->
     <div class="layui-form-item">
         <label class="layui-form-label">function:</label>
         <div class="layui-input-block">
-            <select name="funcName"  lay-verify="required" lay-filter="service">
+            <select name="funcName" id="funcName" lay-verify="required" lay-filter="service">
                 <option value="">请选择</option>
             </select>
         </div>
     </div>
-    <blockquote class="layui-elem-quote">不输入key，代表参数类型为字符串或者数字，单个参数为数组，根据实际情况输入key=》val, 如果多个数组参数key中用.分割,.前面相同字符串会进行数组合并，第一次出现.后的内容为参数数组的key</blockquote>
+    <blockquote class="layui-elem-quote">不输入key，代表参数类型为字符串或者数字，单个参数为数组，根据实际情况输入key=》val,
+        如果多个数组参数key中用.分割,.前面相同字符串会进行数组合并，第一次出现.后的内容为参数数组的key
+    </blockquote>
     <div class="layui-form-item" id="funcParamsItem">
-        <div class="layui-form-item" >
+        <div class="layui-form-item">
             <label class="layui-form-label">Params</label>
             <div class="layui-input-inline">
                 <label class="layui-form-label">key</label>
@@ -79,33 +96,66 @@
     <div class="layui-form-item">
         <label class="layui-form-label"></label>
         <div class="layui-input-inline">
-            <button lay-submit class="layui-btn" lay-filter="submit">提交</button>
+            <!--            <button lay-submit class="layui-btn" lay-filter="submit">提交</button>-->
+            <button class="layui-btn" onclick="query()">查询</button>
         </div>
     </div>
-</form>
+</div>
+<div id="resultlist" class="resultlist" style="visibility: hidden">
+</div>
 
 </body>
 <script>
+    function viewwiki() {
+        var url = 'http://172.20.1.247/wiki/index.php/Title%3DWeb%E7%94%A8%E6%88%B7%E7%AB%AF' +
+            '.api%E6%95%B0%E6%8D%AE%E6%9C%8D%E5%8A%A1%E6%8E%A5%E5%8F%A3%E8%AF%B4%E6%98%8E_wiki';
+        window.open(url);
+    }
+    function viewlog() {
+        var url = '/log/index/service';
+        window.open(url);
+    }
+    function viewapiwiki()
+    {
+        var url = 'http://172.20.1.247/wiki/index.php/Web%E7%94%A8%E6%88%B7%E7%AB%AF' +
+            '.api%E6%95%B0%E6%8D%AE%E6%9C%8D%E5%8A%A1%E6%8E%A5%E5%8F%A3%E8%AF%B4%E6%98%8E_wiki';
+        window.open(url);
+    }
+    function viewapp()
+    {
+        var url = '/api/app/index';
+        window.open(url);
+    }
     var dataJson = JSON.parse('<?php echo json_encode($this->list); ?>');
-    layui.use(['layer', 'form'], function(){
-        var layer = layui.layer,form = layui.form();
-        //layer.msg('Hello World');
-        form.on('submit(submit)', function(data) {
+    var wikiJson = JSON.parse('<?php echo $this->wiki;?>');
+    var $;
+    var layer;
+    var jQuery = null;
+    layui.use(['layer', 'form', 'jquery'], function () {
+        $ = layui.jquery;
+        jQuery = layui.jquery;
+        //动态加载js文件
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "/js/jsonview/jsonview.js";
+        $('#body').append(script);
+
+        layer = layui.layer;
+        var layer = layui.layer, form = layui.form();
+        form.on('submit(submit)', function (data) {
 
         })
-        function addParamsBind()
-        {
+        function addParamsBind() {
             var ele = createUrlParamElement('', '');
             $('#urlParamsItem').append(ele);
-
         }
+
         document.getElementById('addParams').onclick = addParamsBind
-        $('#addParamsFunction').click(function(){
+        $('#addParamsFunction').click(function () {
             var ele = createUrlParamElement('', '', 'func');
             $('#funcParamsItem').append(ele);
         })
-        function createUrlParamElement(k, v, namePre)
-        {
+        function createUrlParamElement(k, v, namePre) {
             if (typeof(namePre) == 'undefined') {
                 var paramsKey = 'urlParamskey';
                 var paramsVal = 'urlParamsValue';
@@ -121,55 +171,74 @@
             var div2 = document.createElement('div');
             div1.className = 'layui-input-inline';
             div2.className = 'layui-input-inline';
-//                        var input1 = document.createElement('input');
-//                        input1.className = 'layui-input';
-//                        input1.type='text';
-//                        input1.name="urlParamskey[]";
-//                        input1.value=k;
-            div1.innerHTML = '<input type="text" class="layui-input" name="'+ paramsKey + '[]" value="' + k + '">';
-//                        var input2 = document.createElement('input');
-//                        input2.className = 'layui-input';
-//                        input2.type='text';
-//                        input2.name="urlParamsValue[]";
-//                        input2.value=dataJson[i].parameter[k];
-//                        div2.appendChild(input2);
+            div1.innerHTML = '<input type="text" class="layui-input" name="' + paramsKey + '[]" value="' + k + '">';
             div2.innerHTML = '<input type="text" class="layui-input" name="' + paramsVal + '[]" value="' + v + '">';
 
             elementParnet.appendChild(label1);
             elementParnet.appendChild(div1);
             elementParnet.appendChild(div2);
+
+            var label1 = document.createElement('label');
+            label1.className = 'layui-form-label';
+            var a = document.createElement('a');
+            a.className = 'layui-btn';
+            a.id = 'addParamsFunction';
+            a.innerHTML = '删除';
+            a.onclick = function () {
+                $(this).parent().parent().remove();
+            }
+            label1.appendChild(a);
+            elementParnet.appendChild(label1);
             return elementParnet;
         }
-        form.on('select(service)', function(data, select) {
+
+        var getFunc = function (url) {
+            $.ajax({
+                url: '/api/debug/getfunc',
+                data: {'uri': url},
+                type: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    $('select[name="funcName"] option:gt(0)').remove();
+                    $.each(data.func, function (k, item) {
+                        $('select[name="funcName"]').append('<option value="' + item + '">' + item + '</option>')
+                    })
+                    form.render();
+                }
+            })
+        }
+        form.on('select(service)', function (data, select) {
             for (var i in dataJson) {
                 if (dataJson[i].id == data.value) {
-                    document.getElementsByName('url')[0].value= '/' + dataJson[i].router
+                    document.getElementsByName('url')[0].value = '/' + dataJson[i].router
                     var length = document.getElementsByName('urlParamskey[]').length;
                     if (length > 0) {
-                        for(var j =0; j< length;j++) {
+                        for (var j = 0; j < length; j++) {
                             document.getElementsByName('urlParamskey[]')[0].parentNode.parentNode.remove();
                         }
                     }
-                    for(var k in dataJson[i].parameter) {
-                        var elementParnet = createUrlParamElement(k, dataJson[i].parameter[k]);
-                        $('#urlParamsItem').append(elementParnet);
+                    $('#funcParamsItem div.layui-form-item:gt(0)').remove();
+                    for (var k in dataJson[i].parameter) {
+                        var elementParnet = createUrlParamElement(k, dataJson[i].parameter[k], 'func');
+                        //$('#urlParamsItem').append(elementParnet);
+                        $('#funcParamsItem').append(elementParnet);
                         //document.getElementById('urlParamsItem').innerHTML = document.getElementById('urlParamsItem').innerHTML + elementParnet.outerHTML;
                     }
-                    $('#funcParamsItem div.layui-form-item:gt(0)').remove();
                     //获取方法列表
-                    $.ajax({
-                        url : '/api/debug/getfunc',
-                        data:{'uri':$('input[name="url"]').val()},
-                        type:'post',
-                        dataType:'json',
-                        success:function(data){
-                            $('select[name="funcName"] option:gt(0)').remove();
-                            $.each(data.func, function(k, item){
-                                $('select[name="funcName"]').append('<option value="' + item + '">' + item + '</option>')
-                            })
-                            form.render();
-                        }
-                    })
+                    getFunc($('input[name="url"]').val());
+//                    $.ajax({
+//                        url : '/api/debug/getfunc',
+//                        data:{'uri':$('input[name="url"]').val()},
+//                        type:'post',
+//                        dataType:'json',
+//                        success:function(data){
+//                            $('select[name="funcName"] option:gt(0)').remove();
+//                            $.each(data.func, function(k, item){
+//                                $('select[name="funcName"]').append('<option value="' + item + '">' + item + '</option>')
+//                            })
+//                            form.render();
+//                        }
+//                    })
                 }
             }
             if ($('input[name="url"]').val().length > 0) {
@@ -177,19 +246,112 @@
             } else if (!$('#wiki').hasClass('layui-btn-disabled')) {
                 $('#wiki').addClass('layui-btn-disabled');
             }
+            if (typeof (wikiJson[data.value]) != 'undefined') {
+                $('#wiki_desc').attr('href', wikiJson[data.value]);
+                if ($('#wiki_desc').hasClass('layui-hide')) {
+                    $('#wiki_desc').removeClass('layui-hide')
+                }
+            } else {
+                if (!$('#wiki_desc').hasClass('layui-hide')) {
+                    $('#wiki_desc').addClass('layui-hide')
+                }
+            }
         })
-        $('#wiki').click(function(){
+        $('#wiki').click(function () {
             if ($('input[name="url"]').val().length > 0) {
                 layer.open({
-                    type :2,
+                    type: 2,
                     title: '说明',
                     'maxmin': true,
-                    shadeClose : true,
-                    area:['800px', '530px'],
-                    content : $('input[name="url"]').val()
+                    shadeClose: true,
+                    offset: ['100px', '200px'],
+                    area: ['800px', '530px'],
+                    content: $('input[name="url"]').val()
                 })
             }
         })
-    })
+        if ($.trim($('input[name="url"]').val()) != '') {
+            getFunc($('input[name="url"]').val());
+        }
+    });
+    var itemid = 0;
+    function query() {
+        var service = $.trim($('#service option:selected').val());
+        var funcName = $.trim($('#funcName option:selected').val());
+        var url = $.trim($('#url').val());
+        if (service == '') {
+            layer.msg('请选择服务', {icon: 2});
+            return;
+        }
+        if (funcName == '') {
+            layer.msg('请选择方法', {icon: 2});
+            return;
+        }
+        var funcParamskey = getFuncParamskey('funcParamskey');
+        var funcParamsValue = getFuncParamskey('funcParamsValue');
+        var urlParamskey = getFuncParamskey('urlParamskey');
+        var urlParamsValue = getFuncParamskey('urlParamsValue');
+//        if (!funcParamskey || !funcParamsValue || !urlParamskey || !urlParamsValue) {
+//            layer.msg('属性值未填写', {icon: 2});
+//            return;
+//        }
+        $.ajax({
+            url: '/api/debug/queryapi',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                service: service,
+                funcName: funcName,
+                url: url,
+                funcParamskey: funcParamskey,
+                funcParamsValue: funcParamsValue,
+                urlParamskey: urlParamskey,
+                urlParamsValue: urlParamsValue
+            },
+            success: function (data) {
+                var procedure = data.procedure;
+                var result = JSON.stringify(data.result);
+                var time = new Date();
+                itemid += 1;
+                $('#resultlist').prepend(
+                    "<div class=\"resultitem\" id=\"result_" + itemid + "\">"
+                    + "<div class=\"layui-elem-quote\">" + time
+                    + "<div>调用步骤</div>"
+                    + "<button style=\"float: right;\""
+                    +" class=\"layui-btn layui-btn-small layui-btn-warm\" onclick=\"delResult(" + itemid + ")\">删除</button>"
+                    + "<div id=\"procedure\">" + procedure + "</div>"
+                    + "</div>"
+                    + "<div class=\"layui-elem-quote\">"
+                    + "返回结果"
+                    + "<div id=\"json_" + itemid + "\"> " + result + "</div>"
+                    + "</div>"
+                    + "</div>");
+                $('#procedure').html(procedure);
+                $('#result').html(result);
+                $('#resultlist').css('visibility', 'visible');
+                $('#json_'+itemid).JSONView($('#json_'+itemid).html());
+                $(document).scrollTop(500);
+            }
+        });
+    }
+
+    function delResult(id) {
+        $("#result_" + id).remove();
+        if($.trim($('#resultlist').html()) == '') {
+            $('#resultlist').css("visibility", 'hidden');
+        }
+    }
+
+    function getFuncParamskey(paramsArrayName) {
+        var funcParamskey = new Array();
+        $("input[name*='" + paramsArrayName + "']").each(function (a, b, c) {
+            if ($(this).val() == null || $(this).val() == '') {
+//                $(this).val('null')
+            }
+            funcParamskey.push($(this).val());
+        });
+        return JSON.stringify(funcParamskey);
+    }
+
 </script>
 </html>

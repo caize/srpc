@@ -3,9 +3,10 @@ require_once __DIR__ . '/../application/library/Syar/Tclient.php';
 set_include_path(__DIR__ . '/../application/library' . PATH_SEPARATOR . get_include_path());
 require_once __DIR__ . '/../application/library/Hprose/Autoload/Hprose.php';
 require_once __DIR__ . '/../application/library/Hprose/Client.php';
+require_once __DIR__ . '/../Sdk/Swoole/Yar/Tcp.php';
 $logPath = '/tmp/fork_test.log';
 file_put_contents($logPath, '');
-$opt = getopt('c:n:l:t:m:');
+$opt = getopt('c:n:l:t:m:p:x');
 if (!isset($opt['c'])) {
     echo "please input -c [并发客户端数]\n";exit();
 }
@@ -20,6 +21,11 @@ if (!isset($opt['l'])) {
 
 if (!isset($opt['t'])) {
     echo "please input -t [curl|yar|hprose]\n";exit();
+}
+if (isset($opt['p'])) {
+    $params = json_decode($opt['p'], true);
+} else {
+    $params = array();
 }
 
 if ($opt['t'] == 'yar' || $opt['t'] == 'hprose') {
@@ -42,20 +48,29 @@ class Bf
     public  $url = null;
     public $type = null;
     public $method = null;
-    public function __construct($url, $type, $method = null)
+    public $params = null;
+    protected $_scheme = null;
+    public function __construct($url, $type, $method = null, $params = [])
     {
+        $parseUrl = parse_url($url);
+        $this->_scheme = $parseUrl['scheme'];
         if (!in_array($type, array('curl', 'yar', 'hprose'))) {
             $this->type = 'curl';
         } else {
-            $this->type = $type;
+            if ($this->_scheme == 'tcp' && $type == 'yar') {
+                $this->type = 'yarTcp';
+            } else {
+                $this->type = $type;
+            }
         }
         $this->url = $url;
         $this->method = $method;
+        $this->params = $params;
     }
 
     public function run()
     {
-        return call_user_func_array(array($this, $this->type), array());
+        return call_user_func_array(array($this, $this->type), $this->params);
     }
 
 
@@ -77,7 +92,30 @@ class Bf
     {
         try {
             $new = new \Syar\Tclient($this->url);
-            $data = $new->call($this->method, array());
+            $data = $new->call($this->method, array($this->params));
+            $arr = json_decode($data, true);
+            if (!isset($arr['errorcode']) || $arr['errorcode'] != 0) {
+                return false;
+            }
+            return true;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            return 0;
+        }
+    }
+
+    protected function yarTcp()
+    {
+        static $tcpObj = null;
+        try {
+            if ($tcpObj == null) {
+                $tcpObj = new \Swoole\Yar\Tcp($this->url);
+            }
+            $data = $tcpObj->call($this->method, array($this->params));
+            $arr = json_decode($data, true);
+            if (!isset($arr['errorcode']) || $arr['errorcode'] != 0) {
+                return false;
+            }
             return true;
         } catch (Exception $e) {
             echo $e->getMessage();
@@ -90,10 +128,10 @@ class Bf
         $client = \Hprose\Client::create(
             $this->url, false
         );
-        call_user_func_array(array($client, $this->method), array());
+        call_user_func_array(array($client, $this->method), [$this->params]);
     }
 }
-$bf = new Bf($url, $type, $opt['m']);
+$bf = new Bf($url, $type, $opt['m'], $params);
 for ($i = 0; $i < $c; $i++) {
     $pid = pcntl_fork();
     $pidArr[] = $pid;
@@ -106,6 +144,9 @@ for ($i = 0; $i < $c; $i++) {
             'times' => array()
         );
         for ($j = 0; $j < $avg; $j++) {
+			if ($j + 1 == $avg) {
+				echo "$i;" . $avg . "\n";
+			}
             if (!$bf->run()) {
                 $error ++;
             }
@@ -114,7 +155,17 @@ for ($i = 0; $i < $c; $i++) {
             $startT = $tmpTime;
             $returnArr['times'][] = $s;
         }
-        file_put_contents($logPath, json_encode($returnArr) . "\n", FILE_APPEND);
+        foreach (array_chunk($returnArr['times'], 100) as $tk => $tItem) {
+            if ($tk == 0) {
+                $tmpReturn['error'] = $error;
+            } else {
+                $tmpReturn['error'] = 0;
+            }
+            $tmpReturn['times'] = $tItem;
+            file_put_contents($logPath, json_encode($tmpReturn) . "\n", FILE_APPEND);
+        }
+        //$returnArr['error'] = $error;
+        //file_put_contents($logPath, json_encode($returnArr) . "\n", FILE_APPEND);
         exit();
     }
 
@@ -134,7 +185,7 @@ $h = fopen($logPath, 'a+');
 $min = 10000;
 $max = 0;
 $error = 0;
-while (($row = fgets($h, 4096)) !== false) {
+while (($row = fgets($h, 655535)) !== false) {
     $json = json_decode($row, true);
     foreach ($json['times'] as $time) {
 //		$allTime += $time;

@@ -40,8 +40,10 @@ class Redis extends Cabstract
 
     protected function _heartbeat()
     {
-        if (!$this->_store->ping($this->_keyPing)) {
-            $this->_connect(1);
+        try {
+            return $this->_store->ping($this->_keyPing);
+        } catch (\Exception $e) {
+            return false;
         }
     }
 
@@ -82,6 +84,16 @@ class Redis extends Cabstract
         return $this;
     }
 
+    public function lRange($key, $start, $end)
+    {
+        return $this->getStore()->lRange($key, $start, $end);
+    }
+
+    public function lPop($key)
+    {
+        return $this->getStore()->lPop($key);
+    }
+
     public function hSet($key, $field, $val)
     {
         return $this->getStore()->hSet($this->getCacheKey($key), $field, $val);
@@ -110,6 +122,18 @@ class Redis extends Cabstract
     public function hGetAll($key)
     {
         return $this->getStore()->hGetAll($this->getCacheKey($key));
+    }
+
+    public function push($key, $val)
+    {
+        if (is_array($val))
+            $val = json_encode($val);
+        return $this->getStore()->rpush($this->getCacheKey($key), $val);
+    }
+
+    public function pop($key)
+    {
+        return $this->getStore()->lpop($this->getCacheKey($key));
     }
     /**
      * @return Redis;

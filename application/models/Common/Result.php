@@ -83,11 +83,11 @@ class ResultModel
 
     /**
      * 设置执行结果代码
-     * @param Integer $code
+     * @param Integer|string $code
      */
     public function setResultCode($code)
     {
-        $this->_resultCode = (int) $code;
+        $this->_resultCode = $code;
         return $this;
     }
 

@@ -19,9 +19,10 @@ class Jsonlog extends Filelog
         $date = $dateObj->format('Ymd');
         $log = $dateObj->format('Y-m-d H:i:s');
         $return = array(
-            'datatime' => $log,
+            'datetime' => $log,
             'errorLevel' => $levelStr,
-            'errorMsg' => $msg
+            'errorMsg' => $msg,
+            'remoteIp' => Api\Globals\Functions::getIpAddress()
         );
         return json_encode($return) . "\n";
     }

@@ -11,6 +11,9 @@ class Test1Model
 {
     public function dbtest()
     {
-        return DB::select('select SQL_NO_CACHE *,CURRENT_TIME from api where current_date() = "2017-04-19"');
+        $data = DB::select('select SQL_NO_CACHE *,CURRENT_TIME from api');
+        $result = new \Common\ResultModel();
+        $result->setResultData($data);
+        return json_encode($result->getResult());
     }
 }

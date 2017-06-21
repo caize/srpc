@@ -9,7 +9,6 @@ namespace Externalapi\Cron;
 
 use \Illuminate\Database\Capsule\Manager as DB;
 use Yaf\Registry;
-
 class UpdateServiceCacheDataModel extends \BaseModel
 {
     protected $_redisConfig = null;
@@ -34,10 +33,12 @@ class UpdateServiceCacheDataModel extends \BaseModel
                 'api.url',
                 'api.parameter',
                 'api.isauth',
-                'api.host'
+                'api.host',
+                'api.status'
             )
             ->where('router_map.isvalid', '=', 1)
-            ->where('api.status', '=', 1)->get()->toArray();
+            //->where('api.status', '=', 1)
+            ->get()->toArray();
         $routMapArr = array();
         foreach ($rows as $item) {
             $key = $item->router;
@@ -83,12 +84,7 @@ class UpdateServiceCacheDataModel extends \BaseModel
         $rows = $table->get();
         $cacheData = array();
         foreach ($rows as $item) {
-            $cacheData[$item->appid][$item->type] = json_encode(
-                array(
-                    'third_name' => $item->third_name,
-                    'third_pwd' => $item->third_pwd
-                )
-            );
+            $cacheData[$item->appid][$item->type] = $item->content;
         }
 
         foreach ($cacheData as $appid => $items) {

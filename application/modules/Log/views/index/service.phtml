@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>日志统计</title>
+    <link rel="stylesheet" href="/js/layui/css/layui.css">
+</head>
+<body>
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>服务日志统计</legend>
+</fieldset>
+
+<div class="layui-form">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">日期</label>
+            <div class="layui-input-inline" style="width: 170px;">
+                <input id="startDate" type="text" class="layui-input" value="<?= $startTime?>"
+                       onclick="layui.laydate({elem: this, istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+                       autocomplete="off">
+            </div>
+            <div class="layui-form-mid">-</div>
+            <div class="layui-input-inline" style="width: 170px">
+                <input id="endDate" type="text" class="layui-input" value="<?= $endTime?>"
+                       onclick="layui.laydate({elem: this, istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+                       autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">IP地址</label>
+            <div class="layui-input-inline">
+                <input id="ip" type="text" placeholder="请输入ip" value=""
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">URL</label>
+            <div class="layui-input-inline">
+                <input id="url" type="text" placeholder="请输入URL" value=""
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">AppId</label>
+            <div class="layui-input-inline">
+                <input id="appid" type="text" placeholder="请输入appid" value=""
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button class="layui-btn" onclick="check();">查询</button>
+        </div>
+    </div>
+
+    <div class="layui-form">
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="120">
+                <col width="50">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>参数</th>
+                <th>数值</th>
+                <th>
+
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>访问次数（次）</td>
+                <td id="totalCount">0</td>
+                <td>
+                    <button class="layui-btn layui-btn-small" onclick="viewDetail('normal');">查看明细</button>
+                </td>
+            </tr>
+            <tr>
+                <td>平均响应时间（秒）</td>
+                <td id="avgTime">0</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>失败次数（次）</td>
+                <td id="errorCount">0</td>
+                <td>
+                    <button class="layui-btn layui-btn-small" onclick="viewDetail('error');">查看明细</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--<script src="http://s.thsi.cn/cb?js/;jquery-1.8.3.min.js"></script>-->
+<script src="/js/layui/layui.js"></script>
+<script>
+    var layer;
+    var jquery;
+    layui.use(['laydate', 'layer', 'jquery'], function () {
+        layer = layui.layer;
+        jquery = layui.jquery;
+    });
+    var startDate;
+    var endDate;
+    var ip;
+    var url;
+    var appid;
+    function check() {
+        layer.load(2);
+        startDate = jquery('#startDate').val();
+        endDate = jquery('#endDate').val();
+        if (startDate > endDate) {
+            var tempDate = startDate;
+            startDate = endDate;
+            endDate = tempDate;
+            jquery('#startDate').val(startDate);
+            jquery('#endDate').val(endDate);
+        }
+        ip = jquery('#ip').val();
+        url = jquery('#url').val();
+        appid = jquery('#appid').val();
+        jquery.ajax({
+            url: '/log/index/querylogapi',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                startDate: startDate,
+                endDate: endDate,
+                ip: ip,
+                url: url,
+                appid: appid
+            },
+            success: function (data) {
+                if (data.errorcode == 0) {
+                    if (data.result.totalCount == 0) {
+                        layer.msg('没有数据');
+                    } else {
+                        layer.msg('查询成功');
+                    }
+                    layer.closeAll('loading');
+                    jquery('#totalCount').html(data.result.totalCount);
+                    jquery('#avgTime').html(data.result.avgTime);
+                    jquery('#errorCount').html(data.result.errorCount);
+                }
+            }
+        });
+    }
+
+    function viewDetail(type) {
+        var urls = "/log/index/serviceloglist?type=" + type + "&startDate=" + startDate
+            + "&endDate=" + endDate + "&ip=" + ip + "&url=" + url + "&appid=" + appid;
+//        location.href = urls;
+        window.open(urls);
+
+    }
+
+    var base64DecodeChars = new Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1);
+    function base64decode(str) {
+        var c1, c2, c3, c4;
+        var i, len, out;
+        len = str.length;
+        i = 0;
+        out = "";
+        while (i < len) {
+            do {
+                c1 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
+            } while (i < len && c1 == -1);
+            if (c1 == -1)           break;
+            do {
+                c2 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
+            } while (i < len && c2 == -1);
+            if (c2 == -1)           break;
+            out += String.fromCharCode((c1 << 2) | ((c2 & 0x30) >> 4));
+            do {
+                c3 = str.charCodeAt(i++) & 0xff;
+                if (c3 == 61)           return out;
+                c3 = base64DecodeChars[c3];
+            } while (i < len && c3 == -1);
+            if (c3 == -1)           break;
+            out += String.fromCharCode(((c2 & 0XF) << 4) | ((c3 & 0x3C) >> 2));
+            do {
+                c4 = str.charCodeAt(i++) & 0xff;
+                if (c4 == 61)            return out;
+                c4 = base64DecodeChars[c4];
+            } while (i < len && c4 == -1);
+            if (c4 == -1)            break;
+            out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
+        }
+        return out;
+    }
+    //    alert(base64decode($('#test').html()));
+</script>
+</body>
+</html>

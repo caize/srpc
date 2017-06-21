@@ -4,26 +4,76 @@ require dirname(__FILE__) . '/../menu.phtml';
 <fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
     <legend>申请列表</legend>
 </fieldset>
-<a href="<?php echo $this->baseUrl;?>/apps/applyadd/" class="layui-btn">申请</a>
+<a href="<?php echo $this->baseUrl; ?>/apps/applyadd/" class="layui-btn">申请</a>
 <table class="layui-table">
     <tr>
         <td>ID</td>
         <td>应用名称</td>
         <td>申请人</td>
+        <td>邮箱</td>
         <td>申请时间</td>
         <td>操作</td>
     </tr>
-    <?php foreach ($this->list as $item):?>
-        <tr>
-            <td><?php echo $item['id'];?></td>
-            <td><?php echo $item['appname'];?></td>
-            <td><?php echo $item['applyuser'];?></td>
-            <td><?php echo $item['ctime'];?></td>
-            <td><a href="<?php echo $this->baseUrl;?>/apps/review/?id=<?php echo $item['id'];?>">通过审核</a>
+    <?php foreach ($this->list as $item): ?>
+        <tr id="list_<?= $item['id'] ?>">
+            <td><?php echo $item['id']; ?></td>
+            <td><?php echo $item['appname']; ?></td>
+            <td><?php echo $item['applyuser']; ?></td>
+            <td><?php echo $item['applyemail']; ?></td>
+            <td><?php echo $item['ctime']; ?></td>
+            <td>
+                <button class="layui-btn layui-btn-small layui-btn-normal" onclick="accept(<?= $item['id'] ?>)">通过
+                </button>
+                <button class="layui-btn layui-btn-small layui-btn-danger" onclick="refuse(<?= $item['id'] ?>)">驳回
+                </button>
             </td>
         </tr>
-    <?php endforeach;
-    ?>
-    <?php
-    ?>
+    <?php endforeach; ?>
 </table>
+<script>
+    var layer = null;
+    layui.use(['layer'], function () {
+        layer = layui.layer;
+    });
+    function accept(applyid) {
+        $.ajax({
+            url: '<?= $this->baseUrl;?>/apps/review',
+            type: 'get',
+            dataType: 'json',
+            data: {
+                id: applyid,
+            },
+            success: function (data) {
+                if (data.errorcode == 0) {
+                    $('#list_' + applyid).remove();
+                    layer.alert(data.errormsg, {icon: 1});
+                } else {
+                    layer.alert(data.errormsg, {icon: 2});
+                }
+            }
+        });
+    }
+    function refuse(applyid) {
+        layer.prompt({title:'请输入原因', formType: 2}, function(text, index){
+            layer.close(index);
+            $.ajax({
+                url: '<?= $this->baseUrl;?>/apps/unreview',
+                type: 'get',
+                dataType: 'json',
+                data: {
+                    id: applyid,
+                    reason: text
+                },
+                success: function (data) {
+                    if (data.errorcode == 0) {
+                        $('#list_' + applyid).remove();
+                        layer.alert(data.errormsg, {icon: 1});
+                    } else {
+                        layer.alert(data.errormsg, {icon: 2});
+                    }
+                }
+            });
+        });
+
+    }
+</script>

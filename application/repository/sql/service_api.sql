@@ -27,25 +27,25 @@ CREATE TABLE `api` (
   `isauth` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否认证',
   `host` varchar(15) NOT NULL COMMENT '指定host',
   `groupid` int(11) NOT NULL DEFAULT '0' COMMENT '组ID',
+  `wiki` varchar(255) DEFAULT NULL COMMENT 'wiki地址',
   `desc` varchar(255) DEFAULT NULL,
   `status` tinyint(4) DEFAULT '1',
   `ctime` datetime DEFAULT NULL,
   `mtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_url` (`url`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='接口地址表';
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='接口地址表';
 
 -- ----------------------------
 -- Records of api
 -- ----------------------------
-INSERT INTO `api` VALUES ('1', '行情服务quote', 'http://l2-hq.10jqka.com.cn/quote', '{\"Method\":\"Quote\",\"Fuquan\":\"Q\",\"CodeList\":\"\",\"DataType\":\"\",\"DateTime\":\"\",\"DupCode\":0}', '1', '172.20.0.127', '0', null, '1', null, '2017-04-10 19:06:33');
-INSERT INTO `api` VALUES ('5', '行情服务hexin', 'http://l2-hq.10jqka.com.cn/hexin', '{\"Method\":\"Quote\",\"Fuquan\":\"Q\",\"CodeList\":\"\",\"DataType\":\"\",\"DateTime\":\"\",\"DupCode\":0}', '0', '', '0', 'hexin 返回xml', '1', '2017-04-07 14:59:09', '2017-04-10 19:06:35');
-INSERT INTO `api` VALUES ('6', 'test', 'http://l2-hq.10jqka.com.cn/hexin1', null, '0', '', '0', '', '1', '2017-04-07 15:08:41', '2017-04-07 15:08:41');
-INSERT INTO `api` VALUES ('7', '本地认证', 'hosttest', null, '1', '', '0', '', '1', '2017-04-07 17:44:43', '2017-04-10 14:25:19');
-INSERT INTO `api` VALUES ('8', '本地不认证', '', null, '0', '', '0', '返回认证token', '1', '2017-04-10 09:40:38', '2017-04-10 14:26:16');
-INSERT INTO `api` VALUES ('10', 'find数据服务中站', 'http://dataservice/orcService2.php', null, '0', '172.20.0.127', '0', '', '1', '2017-04-10 15:19:44', '2017-04-10 15:19:44');
-INSERT INTO `api` VALUES ('11', 'swoole下测试', 'swoolehost', null, '1', '127.0.0.1', '0', '测试', '1', '2017-04-12 09:43:27', '2017-04-12 09:43:27');
-INSERT INTO `api` VALUES ('12', 'I问财openapi平台', 'http://10.0.32.171', null, '1', '', '0', '内网开发环境', '1', '2017-04-12 16:49:59', '2017-04-12 16:49:59');
+INSERT INTO `api` VALUES ('1', '行情服务quote', 'http://l2-hq.10jqka.com.cn/quote', '{\"Method\":\"Quote\",\"Fuquan\":\"Q\",\"CodeList\":\"\",\"DataType\":\"\",\"DateTime\":\"\",\"DupCode\":0}', '0', '172.20.0.127', '0', null, '11', '1', null, '2017-04-21 17:20:50');
+INSERT INTO `api` VALUES ('5', '行情服务hexin', 'http://l2-hq.10jqka.com.cn/hexin', '{\"Method\":\"Quote\",\"Fuquan\":\"Q\",\"CodeList\":\"\",\"DataType\":\"\",\"DateTime\":\"\",\"DupCode\":0}', '0', '', '0', null, 'hexin 返回xml', '1', '2017-04-07 14:59:09', '2017-04-10 19:06:35');
+INSERT INTO `api` VALUES ('6', 'test', 'http://l2-hq.10jqka.com.cn/hexin1', null, '0', '', '0', null, '', '1', '2017-04-07 15:08:41', '2017-04-07 15:08:41');
+INSERT INTO `api` VALUES ('7', '本地认证', 'hosttest', null, '1', '', '0', null, '', '1', '2017-04-07 17:44:43', '2017-04-25 15:08:36');
+INSERT INTO `api` VALUES ('8', '本地不认证', '', null, '0', '', '0', 'sdfds', '返回认证token', '1', '2017-04-10 09:40:38', '2017-04-25 15:10:21');
+INSERT INTO `api` VALUES ('10', 'find数据服务中站', 'http://dataservice/orcService2.php', null, '0', '172.20.0.127', '0', null, '', '1', '2017-04-10 15:19:44', '2017-04-10 15:19:44');
+INSERT INTO `api` VALUES ('12', 'I问财openapi平台', 'http://iwencai-api-801', null, '1', '', '0', null, '内网开发环境http://10.0.32.171', '1', '2017-04-12 16:49:59', '2017-04-21 16:25:45');
 
 -- ----------------------------
 -- Table structure for app
@@ -126,8 +126,7 @@ CREATE TABLE `auth_third_bind` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(20) NOT NULL,
   `appid` varchar(40) NOT NULL,
-  `third_name` varchar(50) NOT NULL,
-  `third_pwd` varchar(50) NOT NULL DEFAULT '',
+  `content` text not null,
   PRIMARY KEY (`id`),
   UNIQUE KEY `indx_appid_type` (`appid`,`type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='第三方认证信息绑定';
@@ -135,7 +134,7 @@ CREATE TABLE `auth_third_bind` (
 -- ----------------------------
 -- Records of auth_third_bind
 -- ----------------------------
-INSERT INTO `auth_third_bind` VALUES ('2', 'iwencai', '58eae00591d05', '0edA72641852', 'f4ac7af60a86cd62dad42a7f272ec4d7');
+INSERT INTO `auth_third_bind` VALUES ('8', 'iwencai', '58eae00591d05', '{\"third_name\":\"4549152Eb776\",\"third_pwd\":\"efa9e9209a6efd7e0b47d5992baa4421\"}');
 
 -- ----------------------------
 -- Table structure for groups
@@ -182,3 +181,22 @@ INSERT INTO `router_map` VALUES ('4', 'api/quote/formulacache', 'redis行情获�
 INSERT INTO `router_map` VALUES ('5', 'api/quote/ifinddataservice', 'ifind数据中心数据获取', '10', '1', '2017-04-10 15:20:22', '2017-04-11 09:08:55');
 INSERT INTO `router_map` VALUES ('6', 'api/swoole/swoole', 'swoole测试', '11', '1', '2017-04-12 09:46:21', '2017-04-12 09:46:21');
 INSERT INTO `router_map` VALUES ('7', 'api/iwencai/openapi', 'i问财api开放平台', '12', '1', '2017-04-12 16:54:39', '2017-04-12 16:54:39');
+
+
+-- ----------------------------
+-- edit api index
+-- ----------------------------
+ALTER TABLE `api`
+DROP INDEX `idx_url` ,
+ADD UNIQUE INDEX `idx_url` (`url`,`name`) USING BTREE ;
+
+
+ALTER TABLE `app`
+ADD COLUMN `applyemail`  varchar(50) NULL AFTER `isvalid`,
+ADD COLUMN `serveralertname`  varchar(50) NULL AFTER `applyemail`;
+
+ALTER TABLE `app_apply`
+ADD COLUMN `applyemail`  varchar(50) NULL AFTER `isvalid`,
+ADD COLUMN `serveralertname`  varchar(50) NULL AFTER `applyemail`;
+
+

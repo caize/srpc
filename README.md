@@ -1,14 +1,60 @@
+# v1.0.7 20170615
+> 解决数据空闲连接长时间占用问题
+> 增加http接口代码自动生成工具
+> 增加行情free,zg-hq接口
+
+# v1.0.6 20170608
+> 增加日志查询模块
+> 重新优化Tcp访问，改为异步模式，增加sdk:tcp必须使用提供的组件
+> 增加push接口：用户订阅与用户个性化设置
+
+# v1.0.6 20170531
+> 增加部分内部缓存删除功能
+> 增加回测接入接口
+> 优化程序 减少redis依赖，不是直接操作redis的服务在redis缓存服务异常时可以保证正常访问
+>> iwencai token生成到文件中
+>> routermap 信息直接查询数据库
+> 简化进程名称设置，只需要配置swoole.processNamePre即可
+# v1.0.5 20170524
+> 解决多服务日志状态存储key冲突问题
+
+# v1.0.4 20170522
+## 本次修改内容
+> 数据访问增加缓存层，通过协议@cached传递
+>
+> 问财openapi接口可以直接通过传递问财应用信息访问
+>
+> 增加问财选股接口
+>
+> 修改行情接口/hexin，由平台解析
+>
+> 增加redis缓存服务
+# v1.0.3 20170510
+## 本次修改内容
+> 增加ifind数据服务认证接口
+>
+> 增加异常监控提醒：error提醒和慢请求提醒
+
+# v1.0.3 20170502
+## 本次修改内容
+> 迁移http or tcp server目录
+>
+> 增加问财cbas个性化推荐接口
+>
+> 问财接口全部改GET请求
 # v1.0.2 20170419 
-# 本次修改内容
-## 增加swoole http request 请求日志， 增加日志定时器，swoole下有效
+## 本次修改内容
+> 增加swoole http request 请求日志， 增加日志定时器，swoole下有效
 
 # v1.0.1 20170418 
-# 增加 yar tcp支持
-## 必须使用 application/library/Syar/Tclient.php 客户端进行发送请求
+## 增加 yar tcp支持
+> 必须使用 application/library/Syar/Tclient.php 客户端进行发送请求
 
 # v1.0 20170414 
-# 接口服务平台项目
-# 依赖库 
-### yaf + yar + swoole
-### predis redis本地行情
+## 接口服务平台项目
+> 依赖库 
+>
+>> yaf + yar + swoole
+>
+>> predis redis本地行情
 

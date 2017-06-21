@@ -5,6 +5,7 @@
  * Date: 2017/4/7
  * Time: 15:44
  */
+
 namespace Admin;
 
 use Api\Globals\Defined;
@@ -34,15 +35,15 @@ class AppsModel
     public function appApply($params)
     {
         $resultModel = new ResultModel();
-        if (empty($params['appName'])) {
+        if (empty($params['appName']) || empty($params['email'])) {
             $resultModel->setResultCode(-1);
-            $resultModel->setResultMsg('应用名不能为空');
+            $resultModel->setResultMsg('应用名或者邮箱不能为空');
             return $resultModel;
         }
-        $row = DB::table('app_apply')->where('appname', '=', $params['appName'])->first();
+        $row = DB::select("select id from app_apply where appname = '{$params['appName']}' and status in (0, 1)");
         if ($row) {
             $resultModel->setResultCode(-1);
-            $resultModel->setResultMsg('已被申请');
+            $resultModel->setResultMsg('该应用名已申请');
             return $resultModel;
         }
         $dataObj = new \DateTime();
@@ -51,10 +52,52 @@ class AppsModel
             'status' => 0,
             'ctime' => $dataObj->format('Y-m-d H:i:s'),
             'mtime' => $dataObj->format('Y-m-d H:i:s'),
-            'isvalid' => 1
+            'isvalid' => 1,
+            'applyemail' => $params['email'],
+            'serveralertname' => $params['serveralert']
         );
-        DB::table('app_apply')->insert($insertData);
+        $res = DB::table('app_apply')->insert($insertData);
+        if ($res) {
+            $resultModel->setResultCode(0);
+            $resultModel->setResultMsg('申请成功');
+        } else {
+            $resultModel->setResultCode(-1);
+            $resultModel->setResultMsg('申请失败，请重试');
+        }
         return $resultModel;
+    }
+
+    public function unReview($applyId)
+    {
+        $resultModel = new ResultModel();
+        $tableObj = DB::table('app_apply');
+        $row = $tableObj->where('id', '=', $applyId)->where('status', '=', 0)->first();
+        if (!$row) {
+            $resultModel->setResultCode(-1);
+            $resultModel->setResultMsg('申请记录不存在');
+            return $resultModel;
+        }
+        $dateObj = new \DateTime();
+
+        $updateData = array(
+            'status' => 2,
+            'mtime' => $dateObj->format('Y-m-d H:i:s')
+        );
+        if ($tableObj->update($updateData)) {
+            $resultModel->setResultCode(0);
+            $resultModel->setResultMsg('驳回成功');
+        } else {
+            $resultModel->setResultCode(-1);
+            $resultModel->setResultMsg('驳回失败，请重试');
+        }
+        return $resultModel;
+
+    }
+
+    public function getApplyMessageByid($applyId)
+    {
+        return (array)DB::table('app_apply')
+            ->where('id', '=', $applyId)->first();
     }
 
     public function review($applyId)
@@ -85,10 +128,14 @@ class AppsModel
                 'ctime' => $dateObj->format('Y-m-d H:i:s'),
                 'mtime' => $dateObj->format('Y-m-d H:i:s'),
                 'isvalid' => 1,
+                'applyemail' => $row->applyemail,
+                'serveralertname' => $row->serveralertname
             );
             $appData['secret'] = sha1($applyId . $appData['appname'] . microtime(true));
             DB::table('app')->insert($appData);
             DB::commit();
+            $resultModel->setResultCode(0);
+            $resultModel->setResultMsg('申请成功');
         } catch (\Exception $e) {
             DB::rollBack();
             $resultModel->setResultCode(-1);
@@ -167,14 +214,14 @@ class AppsModel
     public function bindThirdList($appid)
     {
         $row = DB::table('auth_third_bind')
-            ->select(array('type', 'third_name', 'third_pwd', 'id'))
+            ->select(array('type', 'content', 'id'))
             ->where('appid', '=', $appid)->get()->toArray();
         if (empty($row)) {
             return $row;
         }
         $returnArray = array();
         foreach ($row as $item) {
-            $returnArray[] = (array)$item;
+            $returnArray[$item->type] = (array)$item;
         }
         return $returnArray;
     }
@@ -185,7 +232,7 @@ class AppsModel
         $appid = $param['appid'];
         if (empty($appid)) {
             $resultModel->setResultCode(-1);
-            $resultModel->setREsultMsg('已存在');
+            $resultModel->setREsultMsg('不存在');
             return $resultModel;
         }
         $type = $param['type'];
@@ -194,19 +241,25 @@ class AppsModel
             $resultModel->setREsultMsg('认证方式不存在');
             return $resultModel;
         }
-        $authid = $param['authid'];
-        $secret = $param['authsecret'];
-        $row = DB::table('auth_third_bind')->where('appid', '=', $appid)->where('type', '=', $type)->first();
-
-        if ($row) {
-            $resultModel->setResultCode(-1);
-            $resultModel->setREsultMsg('已存在');
-            return $resultModel;
+        $contentArr = array();
+        if ((isset($param['authid']))) {
+            $contentArr['third_name'] = $param['authid'];
+            $contentArr['third_pwd'] = $param['authsecret'];
+        } elseif (isset($param['iptables'])) {
+            $contentArr = array_unique(preg_split('/[^\.\d]+/', $param['iptables']));
+            $contentArr;
         }
-        $flag = DB::table('auth_third_bind')
-            ->insert(
-                array('type' => $type, 'appid' => $appid, 'third_name' => $authid, 'third_pwd' => $secret)
-            );
+        $row = DB::table('auth_third_bind')->where('appid', '=', $appid)->where('type', '=', $type)->first();
+        if ($row) {
+            $flag = DB::table('auth_third_bind')
+                ->where('appid', '=', $appid)
+                ->where('type', '=', $type)->update(array('content' => json_encode($contentArr)));
+        } else {
+            $flag = DB::table('auth_third_bind')
+                ->insert(
+                    array('type' => $type, 'appid' => $appid, 'content' => json_encode($contentArr))
+                );
+        }
         if (!$flag) {
             $resultModel->setResultCode(-1);
             $resultModel->setREsultMsg('失败');
@@ -227,6 +280,27 @@ class AppsModel
             $resultModel->setREsultMsg('失败');
             return $resultModel;
         }
+        return $resultModel;
+    }
+
+    public function updateInfo($params)
+    {
+        $resultModel = new ResultModel();
+        $flag = DB::table('app')
+            ->where('appid', '=', $params['appid'])
+            ->update(
+                [
+                    'applyemail' => $params['email'],
+                    'serveralertname' => $params['serveralert'],
+                    'mtime' => date('Y-m-d H:i:s')
+                ]
+            );
+        if (!$flag) {
+            $resultModel->setResultCode(-1);
+            $resultModel->setREsultMsg('失败');
+            return $resultModel;
+        }
+        $resultModel->setREsultMsg('成功');
         return $resultModel;
     }
 }

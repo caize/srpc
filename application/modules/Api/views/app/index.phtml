@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>应用信息查询</title>
+    <link rel="stylesheet" href="/js/layui/css/layui.css">
+</head>
+<body>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>
+        APP信息查询
+    </legend>
+</fieldset>
+<div class="layui-form">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">APPID</label>
+        <div class="layui-input-inline">
+            <input type="text" name="appid" id="appid"
+            placeholder="请输入appid" class="layui-input" autocomplete="off">
+        </div>
+
+        <div class="layui-input-inline">
+            <button class="layui-btn" id="checkbtn">查询</button>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称</label>
+        <div class="layui-input-block">
+            <input id="appname" readonly
+                   placeholder="空" class="layui-input" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">申请时间</label>
+        <div class="layui-input-block">
+            <input id="applydate" readonly
+                   placeholder="空" class="layui-input" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">申请用户</label>
+        <div class="layui-input-block">
+            <input id="serveralertname" readonly
+                   placeholder="空" class="layui-input" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">申请邮箱</label>
+        <div class="layui-input-block">
+            <input id="applyemail" readonly
+                   placeholder="空" class="layui-input" autocomplete="off">
+        </div>
+    </div>
+
+</div>
+<script src="/js/layui/layui.js"></script>
+<script type="text/javascript">
+    var $ = null;
+    var layer = null;
+    layui.use(['jquery', 'layer'], function(){
+        $ = layui.jquery;
+        layer = layui.layer;
+        $('#checkbtn').on('click', function(){
+            var appid = $.trim($('#appid').val());
+            clearMessage();
+            if(appid == null || appid == '') {
+                layer.alert('请输入appid', {icon: 2});
+                return;
+            }
+            var pattern = /^(\w){13,13}$/;
+            if(!pattern.exec(appid)) {
+                layer.alert('请输入正确的appid', {icon: 2});
+                return;
+            }
+            layer.loadingText = 'test';
+            layer.load(2);
+            $.ajax({
+                url: '/api/app/queryappapi',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    appid: appid,
+                },
+                success: function(data) {
+                    if(data.errorcode == 0) {
+                        var appInfo = data.result;
+                        $('#applydate').val(appInfo.applydate);
+                        $('#appname').val(appInfo.appname);
+                        $('#serveralertname').val(appInfo.serveralertname);
+                        $('#applyemail').val(appInfo.applyemail);
+                    } else {
+                        layer.msg(data.errormsg);
+                    }
+                    layer.closeAll('loading');
+                }
+            });
+        });
+    });
+    function clearMessage()
+    {
+        $('#applydate').val('');
+        $('#appname').val('');
+        $('#serveralertname').val('');
+        $('#applyemail').val('');
+    }
+</script>
+</body>
+</html>

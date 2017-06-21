@@ -92,9 +92,14 @@ class Protocol
             if (!method_exists($this->_callBackClass, $method)) {
                 throw new \Exception('not found method in class');
             }
+            /**
+             * swoole 协程结合yar, 使用call_user_func_array后返回出现异常。
+             * 所以这里暂时用很low的方法临时过渡一下。
+             */
             return [
                 'errorcode' => 200,
                 'rs' => call_user_func_array(array($this->_callBackClass, $method), $params)
+                //'rs' => $this->callUserFuncArray([$this->_callBackClass, $method], $params)
             ];
         } catch (\Exception $e) {
             $error = [
@@ -104,5 +109,65 @@ class Protocol
             ];
             return $error;
         }
+    }
+
+    protected function callUserFuncArray($callback, $params)
+    {
+        switch (count($params)) {
+            case 0:
+                $rs = $callback[0]->{$callback[1]}();
+                break;
+            case 1:
+                $rs = $callback[0]->{$callback[1]}($params[0]);
+                break;
+            case 2:
+                $rs = $callback[0]->{$callback[1]}($params[0], $params[1]);
+                break;
+            case 3:
+                $rs = $callback[0]->{$callback[1]}($params[0], $params[1], $params[2]);
+                break;
+            case 4:
+                $rs = $callback[0]->{$callback[1]}($params[0], $params[1], $params[2], $params[3]);
+                break;
+            case 5:
+                $rs = $callback[0]->{$callback[1]}(
+                    $params[0], $params[1], $params[2], $params[3],
+                    $params[4]
+                );
+                break;
+            case 6:
+                $rs = $callback[0]->{$callback[1]}(
+                    $params[0], $params[1], $params[2], $params[3],
+                    $params[4], $params[5]
+                );
+                break;
+            case 7:
+                $rs = $callback[0]->{$callback[1]}(
+                    $params[0], $params[1], $params[2], $params[3],
+                    $params[4], $params[5], $params[6]
+                );
+                break;
+            case 8:
+                $rs = $callback[0]->{$callback[1]}(
+                    $params[0], $params[1], $params[2], $params[3],
+                    $params[4], $params[5], $params[6], $params[7]
+                );
+                break;
+            case 9:
+                $rs = $callback[0]->{$callback[1]}(
+                    $params[0], $params[1], $params[2], $params[3],
+                    $params[4], $params[5], $params[6], $params[7],
+                    $params[8]
+                );
+                break;
+            case 10:
+                $rs = $callback[0]->{$callback[1]}(
+                    $params[0], $params[1], $params[2], $params[3],
+                    $params[4], $params[5], $params[6], $params[7],
+                    $params[8], $params[9]
+                );
+                break;
+        }
+        return $rs;
     }
 }

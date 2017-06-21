@@ -10,4 +10,5 @@ defined('APPLICATION_ENV')
 define('APPLICATION_PATH', dirname(__FILE__) . '/..');
 define('APPLICATION_PATH_CONFIG', APPLICATION_PATH . '/conf');
 define('APPLICATION_PATH_APP', APPLICATION_PATH . '/application');
-set_include_path('/usr/local/lib/php/library' . PATH_SEPARATOR . get_include_path());
+define('APPLICATION_PATH_APP_REPOSITORY', APPLICATION_PATH_APP . '/repository');
+set_include_path('/usr/local/php7/lib/php/library' . PATH_SEPARATOR . get_include_path());

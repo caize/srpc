@@ -69,9 +69,6 @@ class Http implements Request
 
         curl_setopt($this->_ch, CURLOPT_SSL_VERIFYPEER, 0);
 
-
-        $this->setTimeout($this->_timeout);
-
         $this->_httpMethod = self::HTTP_GET;
     }
 
@@ -208,7 +205,6 @@ class Http implements Request
         curl_setopt($this->_ch, CURLOPT_URL, $url);
         curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->_ch, CURLOPT_TIMEOUT, $this->_timeout);
-        $params = \Yaf\Dispatcher::getInstance()->getRequest()->getParams();
         return $this->execute();
     }
 
@@ -256,11 +252,18 @@ class Http implements Request
 
     /**
      * Set custom cookie
-     * @param string $cookie
+     * @param string|array $cookie
      * @access public
      */
     public function setCookie($cookie)
     {
+        if (is_array($cookie)) {
+            $tCookieArr = [];
+            foreach ($cookie as $k => $v) {
+                $tCookieArr[] = "{$k}={$v}";
+            }
+            $cookie = implode('; ', $tCookieArr);
+        }
         curl_setopt($this->_ch, CURLOPT_COOKIE, $cookie);
     }
 
@@ -324,8 +327,10 @@ class Http implements Request
         if (curl_errno($this->_ch)) {
             $this->errCode = curl_errno($this->_ch);
             $this->errMsg = curl_error($this->_ch) . '[' . $this->errCode . ']';
+			$this->close();
             return false;
         } else {
+			$this->close();
             return $result;
         }
     }

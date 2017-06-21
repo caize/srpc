@@ -3,10 +3,8 @@
     <link rel="stylesheet" href="/js/layui/css/layui.css">
     <link rel="stylesheet" href="/js/jsonview/jsonview.css">
 </head>
-<body>
-<script src="http://s.thsi.cn/cb?js/;jquery-1.8.3.min.js"></script>
-<script src="/js/layui/layui.js"></script>
-<script src="/js/jsonview/jsonview.js"></script>
+<body id="body">
+
 <fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
     <legend>Debug调试Demo</legend>
 </fieldset>
@@ -16,19 +14,24 @@
 </div>
 <blockquote class="layui-elem-quote">
 返回结果
-<div id="json">
-
-</div>
-
+<div id="json"><?php echo json_encode($this->result);?></div>
 
 </blockquote>
-
-
+<script src="/js/layui/layui.js"></script>
 <script>
-    $('#json').JSONView(<?php echo json_encode($this->result);?>)
+    var $ = null;
+    var jQuery = null;
+    layui.use(['jquery'], function() {
+        $ = layui.jquery;
+        jQuery = layui.jquery;
+        //动态加载js文件
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "/js/jsonview/jsonview.js";
+        $('#body').append(script);
+        $('#json').JSONView($('#json').html());
+    });
 </script>
-
-
 </body>
 
 </html>

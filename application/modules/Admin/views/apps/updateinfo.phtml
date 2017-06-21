@@ -1,0 +1,23 @@
+<?php
+require dirname(__FILE__) . '/../menu.phtml';
+?>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px">
+    <legend>应用修改</legend>
+</fieldset>
+<form method="post">
+    <input type="hidden" value="<?php echo $this->info['appid'];?>" name="appid">
+<table class="layui-table">
+    <tr>
+        <td>Email</td>
+        <td><input type="text" name="email" class="layui-input" value="<?php echo $this->info['applyemail']; ?>"></td>
+    </tr>
+    <tr>
+        <td>serveralert名称</td>
+        <td><input type="text" name="serveralert" class="layui-input" value="<?php echo $this->info['serveralertname']; ?>"></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type="submit" name="submitBut" value="提交" class="layui-btn"></td>
+    </tr>
+</table>
+</form>
