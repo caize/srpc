@@ -48,6 +48,7 @@ abstract class Log
     /**
      * @param $time 毫秒
      */
+    
     public function registerTimer($time)
     {
         \Swoole\Timer::tick(
